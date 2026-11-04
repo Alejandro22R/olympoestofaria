@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'model' => 'Cita',
+    'plural' => 'Citas',
+    'calendar' => 'Calendario',
+    'fields' => [
+        'vehicle' => 'Vehículo',
+        'customer' => 'Cliente',
+        'scheduled_at' => 'Recepción',
+        'promised_delivery_at' => 'Entrega acordada',
+        'status' => 'Estado',
+        'notes' => 'Observaciones',
+        'created_by' => 'Creada por',
+    ],
+    'status' => [
+        'scheduled' => 'Agendada',
+        'confirmed' => 'Confirmada',
+        'checked_in' => 'Recibida',
+        'cancelled' => 'Cancelada',
+        'no_show' => 'No se presentó',
+    ],
+    'availability' => ':remaining de :capacity cupos libres',
+    'closed' => 'Cerrado',
+    'full' => 'Lleno',
+    'from' => 'Desde',
+    'until' => 'Hasta',
+    'upcoming' => 'Desde hoy',
+    'new_for_day' => 'Agendar este día',
+    'booked' => ':booked/:capacity',
+    'today' => 'Hoy',
+    'previous_month' => 'Mes anterior',
+    'next_month' => 'Mes siguiente',
+    'errors' => [
+        'too_soon' => 'La recepción debe agendarse con más anticipación.',
+        'non_working_day' => 'El taller no trabaja ese día.',
+        'holiday' => 'El taller estará cerrado ese día (:name).',
+        'outside_hours' => 'La hora está fuera del horario del taller.',
+        'day_full' => 'No quedan cupos ese día.',
+        'delivery_before_reception' => 'La entrega debe ser igual o posterior a la recepción.',
+        'invalid_transition' => 'No se puede pasar de ":from" a ":to".',
+    ],
+];

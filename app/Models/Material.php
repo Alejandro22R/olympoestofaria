@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\Catalog\Enums\MaterialType;
+use App\Models\Contracts\Translatable;
 use Database\Factories\MaterialFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
 #[Fillable(['type', 'name', 'description', 'supplier', 'origin', 'cost_per_m2_cents', 'price_per_m2_cents', 'is_active'])]
-class Material extends Model
+class Material extends Model implements Translatable
 {
     /** @use HasFactory<MaterialFactory> */
     use HasFactory, HasTranslations, LogsActivity;

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Domain\Settings\GeneralSettings;
 use App\Domain\Settings\Listeners\AuditSettingsChanges;
+use Filament\Support\Facades\FilamentTimezone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -20,5 +22,8 @@ class AppServiceProvider extends ServiceProvider
         Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());
 
         Event::listen(SavingSettings::class, AuditSettingsChanges::class);
+
+        // Las fechas se guardan en UTC y el panel las muestra/edita en la zona horaria del taller (Ajustes > General).
+        FilamentTimezone::set(fn (): string => app(GeneralSettings::class)->timezone);
     }
 }

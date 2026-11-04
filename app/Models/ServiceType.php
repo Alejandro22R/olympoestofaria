@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\Catalog\Enums\PricingUnit;
+use App\Models\Contracts\Translatable;
 use Database\Factories\ServiceTypeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
 #[Fillable(['slug', 'name', 'description', 'base_price_cents', 'pricing_unit', 'estimated_hours', 'material_m2', 'sort', 'is_active'])]
-class ServiceType extends Model
+class ServiceType extends Model implements Translatable
 {
     /** @use HasFactory<ServiceTypeFactory> */
     use HasFactory, HasTranslations, LogsActivity;

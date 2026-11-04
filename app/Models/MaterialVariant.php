@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\Translatable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Translatable\HasTranslations;
 
 #[Fillable(['material_id', 'name', 'color_hex', 'image_path', 'sku', 'is_active'])]
-class MaterialVariant extends Model
+class MaterialVariant extends Model implements Translatable
 {
     use HasTranslations;
 

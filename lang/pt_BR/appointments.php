@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'model' => 'Agendamento',
+    'plural' => 'Agendamentos',
+    'calendar' => 'Calendário',
+    'fields' => [
+        'vehicle' => 'Veículo',
+        'customer' => 'Cliente',
+        'scheduled_at' => 'Recepção',
+        'promised_delivery_at' => 'Entrega combinada',
+        'status' => 'Status',
+        'notes' => 'Observações',
+        'created_by' => 'Criado por',
+    ],
+    'status' => [
+        'scheduled' => 'Agendado',
+        'confirmed' => 'Confirmado',
+        'checked_in' => 'Recebido',
+        'cancelled' => 'Cancelado',
+        'no_show' => 'Não compareceu',
+    ],
+    'availability' => ':remaining de :capacity vagas livres',
+    'closed' => 'Fechado',
+    'full' => 'Lotado',
+    'from' => 'De',
+    'until' => 'Até',
+    'upcoming' => 'A partir de hoje',
+    'new_for_day' => 'Agendar neste dia',
+    'booked' => ':booked/:capacity',
+    'today' => 'Hoje',
+    'previous_month' => 'Mês anterior',
+    'next_month' => 'Próximo mês',
+    'errors' => [
+        'too_soon' => 'A recepção precisa ser agendada com mais antecedência.',
+        'non_working_day' => 'A oficina não funciona nesse dia.',
+        'holiday' => 'A oficina estará fechada nesse dia (:name).',
+        'outside_hours' => 'O horário está fora do expediente da oficina.',
+        'day_full' => 'Não há mais vagas nesse dia.',
+        'delivery_before_reception' => 'A entrega deve ser igual ou posterior à recepção.',
+        'invalid_transition' => 'Não é possível mudar de ":from" para ":to".',
+    ],
+];

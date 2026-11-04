@@ -14,3 +14,18 @@
 - Esquema preparado para varias sucursales (`branches`, `branch_id`).
 
 **Pendiente del taller:** logo original (PNG/SVG) en versión oscura y clara; los SVG de `public/images/brand` son marcadores provisionales y los hex de la paleta deben verificarse con cuentagotas.
+
+## Fase 1: Núcleo operativo del taller ✅
+
+- Recursos Filament: Clientes (con vehículos como relación), Vehículos, Citas, Servicios, Materiales (con variantes de color) y Feriados (dentro de Ajustes, solo dueño). Campos de catálogo editables en `pt_BR`/`es`; dinero en centavos con `MoneyInput`.
+- Calendario mensual (`/admin/calendar`) con ocupación frente a capacidad, feriados, enlace "agendar en este día" y refresco de respaldo cada 60 s.
+- Ajustes de Agenda y capacidad: días laborables, horario, vehículos por día y en sábado, anticipación mínima, duración de recepción y bloqueo al llenarse. El calendario y las reglas leen estos valores (`AgendaService`), nunca números fijos.
+- Reglas de agenda en `ScheduleAppointment`: no en el pasado ni antes de la anticipación mínima, día laborable sin feriado, dentro del horario, capacidad del día (con bloqueo por fecha en PostgreSQL para evitar dobles reservas) y entrega posterior a la recepción. Editar una cita sin moverla no reevalúa la agenda.
+- Máquina de estados de la cita (`AppointmentStatus`, `ChangeAppointmentStatus`) con transiciones auditadas.
+- Fechas guardadas siempre en UTC (`App\Casts\UtcDateTime`) y mostradas en la zona horaria del taller.
+- Documento del cliente: número cifrado en la base (`encrypted`) con hash HMAC para unicidad, nunca rellenado en el formulario ni en la auditoría; archivo cifrado en disco privado, uno por cliente, MIME real, solo con consentimiento LGPD, servido por URL firmada de 5 minutos + sesión + permiso, con registro de cada visualización.
+- Validaciones con mensajes traducidos y pruebas por regla: placa (antigua y Mercosul, única al normalizar), teléfono E.164, CPF/CNPJ con dígito verificador, año 1950…actual+1, kilometraje, fechas y capacidad.
+- Policies por modelo sobre la matriz de permisos; el tapicero solo lee.
+- Datos demo operativos (`DemoOperationsSeeder`): 4 clientes, vehículos, un cierre y 8 citas.
+
+**Aceptación:** crear cliente → vehículo → cita visible en el calendario; el documento solo se abre con URL firmada y permiso. Cubierto por pruebas (143 en verde), Pint y Larastan sin errores.

@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
-use App\Http\Middleware\SetWorkshopTimezone;
 use App\Support\Brand;
 use Filament\Enums\ThemeMode;
 use Filament\FontProviders\LocalFontProvider;
@@ -70,9 +69,9 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                SetLocale::class,
-                SetWorkshopTimezone::class,
-            ], isPersistent: true)
+            ])
+            // El idioma también debe aplicarse a las peticiones de Livewire del panel.
+            ->middleware([SetLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ]);

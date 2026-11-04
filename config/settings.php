@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Settings\AgendaSettings;
 use App\Domain\Settings\GeneralSettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
@@ -16,6 +17,7 @@ return [
      */
     'settings' => [
         GeneralSettings::class,
+        AgendaSettings::class,
     ],
 
     /*
