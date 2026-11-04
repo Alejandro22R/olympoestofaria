@@ -29,3 +29,18 @@
 - Datos demo operativos (`DemoOperationsSeeder`): 4 clientes, vehículos, un cierre y 8 citas.
 
 **Aceptación:** crear cliente → vehículo → cita visible en el calendario; el documento solo se abre con URL firmada y permiso. Cubierto por pruebas (143 en verde), Pint y Larastan sin errores.
+
+## Fase 2: Check-in e inspección ✅
+
+- Acción "Hacer check-in" en las citas agendadas o confirmadas (`/admin/appointments/{id}/check-in`). Recepción y dueño la usan; el tapicero solo consulta.
+- Diagrama SVG del vehículo (vista superior en corte, `VehicleSilhouettes`) con 17 zonas exteriores e interiores. Un toque crea la marca con zona y posición; cada marca exige tipo de daño y admite nota y fotos (disco privado). Las zonas que no se ven en el dibujo (techo interior, otro) se eligen en la lista.
+- Formulario: kilometraje (obligatorio u opcional según Ajustes), combustible, objetos del vehículo, observaciones y consentimiento LGPD. **Sin firma del cliente.**
+- `RegisterCheckIn`: valida todo en el servidor (consentimiento, kilometraje, combustible, objetos existentes, zona y tipo por marca, posición, límite de marcas y fotos, rutas de fotos dentro de la carpeta de inspecciones), crea la inspección, actualiza el kilometraje del vehículo y pasa la cita a "recibida" por la máquina de estados.
+- Acta en PDF (dompdf) en el idioma del cliente, con Sora/Manrope (TTF en `resources/fonts/pdf`), diagrama numerado, fotos, objetos, texto legal y consentimiento. Se guarda en el disco privado.
+- Envío del acta: por correo (PDF adjunto, en cola) o por WhatsApp (enlace `wa.me` con mensaje traducido y enlace firmado al PDF, válido los días de Ajustes). Cada envío registra quién, cuándo, canal y destinatario (`inspection_report_sends`), visible en la ficha de la inspección.
+- El personal abre el PDF con un enlace firmado de 5 minutos, con sesión y permiso. Las inspecciones no se pueden borrar.
+- Ajustes > Check-in y checklists: kilometraje obligatorio, fotos por daño, daños por inspección, vigencia del enlace, texto legal y de consentimiento por idioma. Listas editables de tipos de daño y objetos del vehículo (solo dueño).
+
+**Aceptación:** inspección completa registrada, con PDF descargable y enviado al cliente. Cubierto por pruebas (181 en verde), Pint y Larastan sin errores.
+
+**Pendiente para la Fase 3:** siluetas por tipo de carrocería editables (`vehicle_silhouettes`); hoy hay una silueta sedán en código.

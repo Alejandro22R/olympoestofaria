@@ -3,9 +3,14 @@
 namespace App\Filament\Resources\Appointments\Tables;
 
 use App\Domain\Appointments\Enums\AppointmentStatus;
+use App\Filament\Resources\Appointments\AppointmentResource;
+use App\Filament\Resources\Appointments\Pages\CheckInAppointment;
+use App\Filament\Resources\Inspections\InspectionResource;
 use App\Models\Appointment;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -17,7 +22,7 @@ class AppointmentsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with('vehicle.customer'))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['vehicle.customer', 'inspection']))
             ->defaultSort('scheduled_at')
             ->columns([
                 TextColumn::make('scheduled_at')->label(__('appointments.fields.scheduled_at'))
@@ -47,6 +52,18 @@ class AppointmentsTable
                         ->when($data['until'] ?? null, fn ($q, $d) => $q->whereDate('scheduled_at', '<=', $d))),
             ])
             ->recordActions([
+                Action::make('checkIn')
+                    ->label(__('inspections.actions.check_in'))
+                    ->icon(Heroicon::OutlinedClipboardDocumentCheck)
+                    ->color('primary')
+                    ->visible(fn (Appointment $record) => CheckInAppointment::canCheckIn($record))
+                    ->url(fn (Appointment $record) => AppointmentResource::getUrl('check-in', ['record' => $record])),
+                Action::make('inspection')
+                    ->label(__('inspections.model'))
+                    ->icon(Heroicon::OutlinedDocumentText)
+                    ->color('gray')
+                    ->visible(fn (Appointment $record) => $record->inspection !== null)
+                    ->url(fn (Appointment $record) => InspectionResource::getUrl('view', ['record' => $record->inspection])),
                 EditAction::make(),
             ]);
     }

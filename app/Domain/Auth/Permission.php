@@ -25,6 +25,9 @@ enum Permission: string
     case AppointmentsView = 'appointments.view';
     case AppointmentsManage = 'appointments.manage';
 
+    case InspectionsView = 'inspections.view';
+    case InspectionsManage = 'inspections.manage';
+
     /**
      * @return array<string, list<self>>
      */
@@ -41,6 +44,7 @@ enum Permission: string
                 self::VehiclesView, self::VehiclesManage,
                 self::CatalogView,
                 self::AppointmentsView, self::AppointmentsManage,
+                self::InspectionsView, self::InspectionsManage,
             ],
             Role::Upholsterer->value => [
                 self::AccessPanel,
@@ -48,6 +52,7 @@ enum Permission: string
                 self::VehiclesView,
                 self::CatalogView,
                 self::AppointmentsView,
+                self::InspectionsView,
             ],
             Role::Customer->value => [],
         ];
