@@ -1,0 +1,22 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../brand.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* Tipografía de marca en el panel: Manrope para texto/tablas, Sora para títulos y cifras. */
+.fi-body {
+    font-family: var(--font-sans);
+}
+
+.fi-header-heading,
+.fi-simple-header-heading,
+.fi-section-header-heading,
+.fi-wi-stats-overview-stat-value {
+    font-family: var(--font-display);
+}
+
+/* Fondo negro de marca en modo oscuro. */
+.dark .fi-body {
+    background-color: var(--color-ink-950);
+}

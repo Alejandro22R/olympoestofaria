@@ -1,0 +1,37 @@
+/*
+ * Identidad visual Olympo (PLAN.md §2.1).
+ * Única fuente de verdad de colores y tipografías. No usar colores sueltos en las vistas.
+ * Los hex están estimados a partir del logo: verificarlos con cuentagotas sobre el archivo original.
+ */
+
+@font-face { font-family: 'Sora'; font-style: normal; font-weight: 500; font-display: swap; src: url('../fonts/sora-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Sora'; font-style: normal; font-weight: 600; font-display: swap; src: url('../fonts/sora-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Sora'; font-style: normal; font-weight: 700; font-display: swap; src: url('../fonts/sora-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 400; font-display: swap; src: url('../fonts/manrope-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 500; font-display: swap; src: url('../fonts/manrope-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 600; font-display: swap; src: url('../fonts/manrope-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 700; font-display: swap; src: url('../fonts/manrope-latin-700-normal.woff2') format('woff2'); }
+
+@theme {
+    --font-sans: 'Manrope', system-ui, sans-serif;
+    --font-display: 'Sora', system-ui, sans-serif;
+
+    --color-brand-500: #0b8fd9;
+    --color-brand-700: #0877b5;
+    --color-brand-800: #066a9f;
+
+    --color-ink-950: #000000;
+    --color-ink-900: #0d0d0d;
+    --color-ink-700: #3a3a3a;
+
+    --color-steel-500: #737373;
+    --color-steel-300: #c9c9c9;
+
+    --color-paper: #ffffff;
+
+    --color-success: #2fa36b;
+    --color-warning: #e0a100;
+    --color-danger: #d64545;
+
+    --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+}

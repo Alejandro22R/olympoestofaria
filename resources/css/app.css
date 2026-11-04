@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+@import './brand.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@layer base {
+    html {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-ink-950 text-paper font-sans antialiased;
+    }
+
+    h1, h2, h3, h4, .font-display {
+        @apply font-display tracking-tight;
+    }
+
+    a {
+        @apply text-brand-500 underline-offset-4 hover:underline;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-brand-500;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-6 py-3 font-semibold text-paper no-underline transition-colors duration-200 ease-brand hover:bg-brand-800 hover:no-underline;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-700 px-6 py-3 font-semibold text-paper no-underline transition-colors duration-200 ease-brand hover:border-steel-500 hover:no-underline;
+    }
+
+    .card {
+        @apply rounded-2xl border border-ink-700 bg-ink-900 p-6;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
