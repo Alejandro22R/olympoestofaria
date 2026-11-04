@@ -88,7 +88,7 @@ class GenerateInspectionReport
             'outline' => VehicleSilhouettes::outline($inspection->silhouette),
             'zones' => VehicleSilhouettes::zones($inspection->silhouette),
             'marks' => $inspection->marks,
-            'viewBox' => VehicleSilhouettes::VIEWBOX,
+            'viewBox' => VehicleSilhouettes::viewBox($inspection->silhouette),
         ])->render();
 
         return 'data:image/svg+xml;base64,'.base64_encode($svg);

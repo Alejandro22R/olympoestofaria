@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Domain\Settings\GeneralSettings;
 use App\Domain\Settings\Listeners\AuditSettingsChanges;
+use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentTimezone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
@@ -25,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Las fechas se guardan en UTC y el panel las muestra/edita en la zona horaria del taller (Ajustes > General).
         FilamentTimezone::set(fn (): string => app(GeneralSettings::class)->timezone);
+
+        // En portugués y español los títulos no van en "Title Case" ("Ordens de serviço", no "Ordens De Serviço").
+        Resource::titleCaseModelLabel(false);
     }
 }

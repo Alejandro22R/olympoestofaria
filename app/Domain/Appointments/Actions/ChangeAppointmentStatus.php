@@ -3,6 +3,7 @@
 namespace App\Domain\Appointments\Actions;
 
 use App\Domain\Appointments\Enums\AppointmentStatus;
+use App\Domain\Appointments\Events\AppointmentChanged;
 use App\Models\Appointment;
 use Illuminate\Validation\ValidationException;
 
@@ -29,6 +30,8 @@ class ChangeAppointmentStatus
 
         $appointment->status = $to;
         $appointment->save();
+
+        AppointmentChanged::dispatch($appointment->id, 'status');
 
         return $appointment;
     }

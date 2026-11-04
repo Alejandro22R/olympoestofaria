@@ -11,6 +11,7 @@ use Carbon\CarbonImmutable;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 /**
@@ -53,6 +54,12 @@ class AppointmentCalendar extends Page
     public function mount(): void
     {
         $this->month = $this->currentMonth()->format('Y-m');
+    }
+
+    #[On('echo-private:workshop,.appointment.changed')]
+    public function refreshCalendar(): void
+    {
+        // Re-render en vivo cuando se crea, mueve o cambia de estado una cita.
     }
 
     public function previousMonth(): void

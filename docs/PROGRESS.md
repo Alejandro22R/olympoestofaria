@@ -43,4 +43,20 @@
 
 **Aceptación:** inspección completa registrada, con PDF descargable y enviado al cliente. Cubierto por pruebas (181 en verde), Pint y Larastan sin errores.
 
-**Pendiente para la Fase 3:** siluetas por tipo de carrocería editables (`vehicle_silhouettes`); hoy hay una silueta sedán en código.
+## Fase 3: Órdenes de trabajo e inventario ✅
+
+- **Órdenes de trabajo** (`/admin/work-orders`): se abren desde la inspección ("Abrir orden de servicio") o a mano. Heredan vehículo, cita y entrega prometida. Llevan servicios, descripción, horas, precio (centavos) y material del inventario con cantidad. Las órdenes no se borran: se cancelan con motivo.
+- **Máquina de estados** `WorkOrderStatus`: recibida → en producción → lista → entregada (con retrabajo lista → en producción y cancelación). No se puede saltar etapas. Cada cambio queda en el historial (`work_order_updates`) y en el activity log.
+- **Etapas editables** (Ajustes > Etapas de producción): nombre pt/es, color, orden, estado al que pertenecen, visibles al cliente y "avisa al cliente" (el aviso al cliente llega en la Fase 6). Una etapa con órdenes no se borra, se desactiva.
+- **Tablero kanban** (`/admin/production`): arrastrar y soltar (y selector "Mover de etapa…" para móvil/teclado). Se sincroniza al instante entre pantallas por el canal privado `workshop` (evento `work-order.moved`, solo identificadores) con refresco de respaldo cada 30 s. El tapicero mueve tarjetas y registra avances con fotos, pero no edita la orden.
+- **Presencia**: en la ficha de la orden se ve quién más la tiene abierta (canal de presencia `work-orders.{id}`).
+- **Inventario** (`/admin/inventory-items`): el stock solo cambia con movimientos (entrada, consumo, ajuste) y nunca queda negativo. El material de la orden se descuenta automáticamente y una sola vez al entrar en producción; si falta material, la orden no avanza y se indica qué falta. Al guardar la orden se avisa si el stock no alcanza.
+- **Avisos en vivo y campana** (Laravel Notifications `database` + `broadcast` en formato Filament, traducidos al idioma de cada usuario): stock mínimo en el momento del consumo, cita creada o movida (el calendario se refresca solo).
+- **Alertas programadas** (`php artisan olympo:alerts`, cada hora): stock mínimo, orden atrasada, a punto de atrasarse, estancada en una etapa y citas de mañana sin confirmar. Sin repeticiones (`alert_logs`). Umbrales en Ajustes > Producción y alertas.
+- **Entrega** (desde una orden "lista"): estado final de cada daño del check-in (reparado / sin cambios), kilometraje y notas. Crea la garantía (mayor plazo entre los servicios de la orden, o el plazo por defecto) y genera el **acta de entrega en PDF** con servicios, comparación recepción × entrega y garantía. **Sin firma**: se envía por correo o WhatsApp con registro de envío, igual que el check-in (envíos unificados en `report_sends`).
+- **Ajustes nuevos**: Producción y alertas, Etapas de producción, Garantías (plazo por defecto, recordatorio, condiciones pt/es), Plazos por servicio y Siluetas por carrocería (sedán, hatch y picape; el check-in usa la silueta del tipo de carrocería del modelo).
+- Datos demo: stock inicial y tres órdenes repartidas en el tablero.
+
+**Aceptación:** una orden consume inventario, avanza por el tablero y cierra con acta. Cubierto por pruebas (241 en verde), Pint y Larastan sin errores.
+
+**Decisión aplicada:** el acta de entrega sale sin firma, con envío y registro (opción prevista en el plan). Si se decide usar firma, se agrega en la página de entrega sin cambiar el resto.

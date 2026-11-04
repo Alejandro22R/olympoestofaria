@@ -3,8 +3,13 @@
 namespace App\Domain\Appointments\Actions;
 
 use App\Domain\Appointments\Enums\AppointmentStatus;
+use App\Domain\Appointments\Events\AppointmentChanged;
 use App\Domain\Appointments\Services\AgendaService;
+use App\Domain\Auth\Permission;
+use App\Domain\Notifications\StaffNotifier;
+use App\Filament\Pages\AppointmentCalendar;
 use App\Models\Appointment;
+use App\Notifications\StaffAlert;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +21,10 @@ use Illuminate\Validation\ValidationException;
  */
 class ScheduleAppointment
 {
-    public function __construct(private readonly AgendaService $agenda) {}
+    public function __construct(
+        private readonly AgendaService $agenda,
+        private readonly StaffNotifier $notifier,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data
@@ -27,13 +35,22 @@ class ScheduleAppointment
         $appointment->fill($data);
         $appointment->status ??= AppointmentStatus::Scheduled;
 
-        return DB::transaction(function () use ($appointment): Appointment {
+        $isNew = ! $appointment->exists;
+        $moved = $appointment->exists && $appointment->isDirty('scheduled_at');
+
+        $appointment = DB::transaction(function () use ($appointment): Appointment {
             $this->lockDay($appointment);
             $this->validate($appointment);
             $appointment->save();
 
             return $appointment;
         });
+
+        if ($isNew || $moved) {
+            $this->announce($appointment, $isNew ? 'created' : 'moved');
+        }
+
+        return $appointment;
     }
 
     /**
@@ -75,6 +92,28 @@ class ScheduleAppointment
         if ($errors !== []) {
             throw ValidationException::withMessages($errors);
         }
+    }
+
+    /**
+     * Aviso en vivo al calendario y a la campana del personal (menos a quien hizo el cambio).
+     */
+    private function announce(Appointment $appointment, string $change): void
+    {
+        AppointmentChanged::dispatch($appointment->id, $change);
+
+        $tz = $this->agenda->timezone();
+        $this->notifier->notify(Permission::AppointmentsManage, new StaffAlert(
+            type: 'appointment_'.$change,
+            titleKey: 'notifications.appointment_'.$change,
+            params: [
+                'plate' => $appointment->vehicle->formattedPlate(),
+                'date' => $appointment->scheduled_at->setTimezone($tz)->format('d/m H:i'),
+            ],
+            bodyKey: 'notifications.appointment_when',
+            url: AppointmentCalendar::getUrl(['month' => $appointment->scheduled_at->setTimezone($tz)->format('Y-m')]),
+            color: 'info',
+            icon: 'heroicon-o-calendar-days',
+        ), except: auth()->user());
     }
 
     /**

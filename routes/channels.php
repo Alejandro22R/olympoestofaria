@@ -2,6 +2,7 @@
 
 use App\Domain\Auth\Permission;
 use App\Models\User;
+use App\Models\WorkOrder;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -17,4 +18,9 @@ Broadcast::channel('App.Models.User.{id}', function (User $user, int $id): bool 
 // Canal interno del taller: solo personal con acceso al panel.
 Broadcast::channel('workshop', function (User $user): bool {
     return $user->is_active && $user->can(Permission::AccessPanel->value);
+});
+
+// Presencia en una orden: quién la tiene abierta, para no pisar cambios. Solo id y nombre.
+Broadcast::channel('work-orders.{workOrder}', function (User $user, WorkOrder $workOrder): array|false {
+    return $user->can('view', $workOrder) ? ['id' => $user->id, 'name' => $user->name] : false;
 });

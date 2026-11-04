@@ -13,6 +13,9 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
+/**
+ * @property MaterialType $type
+ */
 #[Fillable(['type', 'name', 'description', 'supplier', 'origin', 'cost_per_m2_cents', 'price_per_m2_cents', 'is_active'])]
 class Material extends Model implements Translatable
 {

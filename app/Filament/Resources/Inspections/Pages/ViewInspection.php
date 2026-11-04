@@ -6,9 +6,12 @@ use App\Domain\Inspections\Actions\GenerateInspectionReport;
 use App\Domain\Inspections\Actions\InspectionReportLink;
 use App\Domain\Inspections\Actions\SendInspectionReport;
 use App\Domain\Inspections\Enums\ReportChannel;
+use App\Domain\WorkOrders\Actions\CreateWorkOrder;
 use App\Filament\Concerns\MapsDomainValidation;
 use App\Filament\Resources\Inspections\InspectionResource;
+use App\Filament\Resources\WorkOrders\WorkOrderResource;
 use App\Models\Inspection;
+use App\Models\WorkOrder;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Radio;
 use Filament\Notifications\Notification;
@@ -27,6 +30,21 @@ class ViewInspection extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('createWorkOrder')
+                ->label(__('work_orders.actions.create_from_inspection'))
+                ->icon(Heroicon::OutlinedWrench)
+                ->visible(fn () => ! WorkOrder::query()->where('inspection_id', $this->record->id)->exists()
+                    && (bool) auth()->user()?->can('create', WorkOrder::class))
+                ->action(function (): void {
+                    $order = app(CreateWorkOrder::class)->execute([], $this->record, auth()->user());
+                    $this->redirect(WorkOrderResource::getUrl('edit', ['record' => $order]));
+                }),
+            Action::make('workOrder')
+                ->label(__('work_orders.model'))
+                ->icon(Heroicon::OutlinedWrench)
+                ->color('gray')
+                ->visible(fn () => WorkOrder::query()->where('inspection_id', $this->record->id)->exists())
+                ->url(fn () => WorkOrderResource::getUrl('edit', ['record' => WorkOrder::query()->where('inspection_id', $this->record->id)->value('id')])),
             Action::make('download')
                 ->label(__('inspections.actions.download'))
                 ->icon(Heroicon::OutlinedDocumentArrowDown)

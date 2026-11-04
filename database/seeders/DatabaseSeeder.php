@@ -13,10 +13,12 @@ class DatabaseSeeder extends Seeder
             BranchSeeder::class,
             CatalogSeeder::class,
             CheckinCatalogSeeder::class,
+            SilhouetteSeeder::class,
+            ProductionSeeder::class,
         ]);
 
         if (! app()->isProduction()) {
-            $this->call([UserSeeder::class, DemoOperationsSeeder::class]);
+            $this->call([UserSeeder::class, DemoOperationsSeeder::class, DemoProductionSeeder::class]);
         }
     }
 }

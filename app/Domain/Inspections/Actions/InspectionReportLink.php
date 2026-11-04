@@ -23,6 +23,6 @@ class InspectionReportLink
 
     public function forCustomer(Inspection $inspection): string
     {
-        return URL::temporarySignedRoute('inspections.report', now()->addDays($this->settings->report_link_days), ['inspection' => $inspection->id]);
+        return $inspection->customerReportUrl($this->settings->report_link_days);
     }
 }

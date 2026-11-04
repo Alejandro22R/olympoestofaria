@@ -108,6 +108,7 @@ class CheckInAppointment extends Page
     public function form(Schema $schema): Schema
     {
         $settings = app(CheckinSettings::class);
+        $silhouette = VehicleSilhouettes::forVehicle($this->appointment()->vehicle);
 
         return $schema->components([
             Grid::make(['default' => 1, 'lg' => 2])->schema([
@@ -129,10 +130,10 @@ class CheckInAppointment extends Page
                     ->schema([
                         ViewField::make('diagram')
                             ->view('filament.forms.damage-diagram', [
-                                'outline' => VehicleSilhouettes::outline(),
-                                'zones' => VehicleSilhouettes::zones(),
-                                'zoneLabels' => VehicleSilhouettes::options(),
-                                'viewBox' => VehicleSilhouettes::VIEWBOX,
+                                'outline' => VehicleSilhouettes::outline($silhouette),
+                                'zones' => VehicleSilhouettes::zones($silhouette),
+                                'zoneLabels' => VehicleSilhouettes::options($silhouette),
+                                'viewBox' => VehicleSilhouettes::viewBox($silhouette),
                                 'colors' => DamageType::query()->pluck('color_hex', 'id')->all(),
                             ])
                             ->hiddenLabel()
@@ -145,11 +146,11 @@ class CheckInAppointment extends Page
                         ->addActionLabel(__('inspections.actions.add_mark'))
                         ->maxItems($settings->max_marks)
                         ->defaultItems(0)
-                        ->itemLabel(fn (array $state): ?string => VehicleSilhouettes::options()[$state['zone'] ?? ''] ?? null)
+                        ->itemLabel(fn (array $state): ?string => VehicleSilhouettes::options($silhouette)[$state['zone'] ?? ''] ?? null)
                         ->columns(['default' => 1, 'md' => 3])
                         ->schema([
                             Select::make('zone')->label(__('inspections.fields.zone'))
-                                ->options(VehicleSilhouettes::options())->required()->native(false),
+                                ->options(VehicleSilhouettes::options($silhouette))->required()->native(false),
                             Select::make('damage_type_id')->label(__('inspections.fields.damage_type'))
                                 ->options(fn () => DamageType::query()->where('is_active', true)->orderBy('sort')->get()
                                     ->mapWithKeys(fn (DamageType $t) => [$t->id => $t->name])->all())

@@ -28,6 +28,15 @@ enum Permission: string
     case InspectionsView = 'inspections.view';
     case InspectionsManage = 'inspections.manage';
 
+    case WorkOrdersView = 'work_orders.view';
+    case WorkOrdersManage = 'work_orders.manage';
+    /** Mover tarjetas en el tablero y registrar avances (tapicero). */
+    case WorkOrdersProgress = 'work_orders.progress';
+    case DeliveriesManage = 'deliveries.manage';
+
+    case InventoryView = 'inventory.view';
+    case InventoryManage = 'inventory.manage';
+
     /**
      * @return array<string, list<self>>
      */
@@ -45,6 +54,8 @@ enum Permission: string
                 self::CatalogView,
                 self::AppointmentsView, self::AppointmentsManage,
                 self::InspectionsView, self::InspectionsManage,
+                self::WorkOrdersView, self::WorkOrdersManage, self::WorkOrdersProgress, self::DeliveriesManage,
+                self::InventoryView, self::InventoryManage,
             ],
             Role::Upholsterer->value => [
                 self::AccessPanel,
@@ -53,6 +64,8 @@ enum Permission: string
                 self::CatalogView,
                 self::AppointmentsView,
                 self::InspectionsView,
+                self::WorkOrdersView, self::WorkOrdersProgress,
+                self::InventoryView,
             ],
             Role::Customer->value => [],
         ];

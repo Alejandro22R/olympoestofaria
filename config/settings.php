@@ -3,6 +3,8 @@
 use App\Domain\Settings\AgendaSettings;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\GeneralSettings;
+use App\Domain\Settings\ProductionSettings;
+use App\Domain\Settings\WarrantySettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
@@ -20,6 +22,8 @@ return [
         GeneralSettings::class,
         AgendaSettings::class,
         CheckinSettings::class,
+        ProductionSettings::class,
+        WarrantySettings::class,
     ],
 
     /*

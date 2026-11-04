@@ -1,6 +1,7 @@
 {{-- Diagrama SVG de daños: un toque agrega una marca a la lista "marks" con zona y posición. --}}
 @php
     $centers = collect($zones)->map(fn ($z) => $z['center'])->all();
+    [, , $vw, $vh] = array_map('floatval', explode(' ', $viewBox));
 @endphp
 <div
     x-data="{
@@ -31,8 +32,8 @@
                 damage_type_id: null,
                 note: null,
                 photos: [],
-                x: Math.round(p.x / 2 * 100) / 100,
-                y: Math.round(p.y / 4 * 100) / 100,
+                x: Math.round(p.x / {{ $vw }} * 10000) / 100,
+                y: Math.round(p.y / {{ $vh }} * 10000) / 100,
             });
         },
     }"

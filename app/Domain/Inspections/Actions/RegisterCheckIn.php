@@ -40,9 +40,11 @@ class RegisterCheckIn
         if (($data['fuel_level'] ?? null) instanceof FuelLevel) {
             $data['fuel_level'] = $data['fuel_level']->value;
         }
-        $this->validate($appointment, $data, $marks);
+        $this->validate($appointment, $data, $marks, VehicleSilhouettes::forVehicle($appointment->vehicle));
 
-        $inspection = DB::transaction(function () use ($appointment, $data, $marks, $inspector): Inspection {
+        $silhouette = VehicleSilhouettes::forVehicle($appointment->vehicle);
+
+        $inspection = DB::transaction(function () use ($appointment, $data, $marks, $inspector, $silhouette): Inspection {
             $appointment->refresh();
             if ($appointment->inspection()->exists()) {
                 throw ValidationException::withMessages(['appointment' => __('inspections.errors.already_checked_in')]);
@@ -54,14 +56,14 @@ class RegisterCheckIn
                 'fuel_level' => FuelLevel::from((string) $data['fuel_level']),
                 'items_present' => array_values(array_map('intval', $data['items_present'] ?? [])),
                 'observations' => $data['observations'] ?? null,
-                'silhouette' => VehicleSilhouettes::DEFAULT,
+                'silhouette' => $silhouette,
                 'lgpd_consent_at' => now(),
                 'inspected_by' => $inspector?->id,
             ]);
 
             foreach ($marks as $mark) {
                 $zone = (string) $mark['zone'];
-                [$cx, $cy] = VehicleSilhouettes::centerOf($zone);
+                [$cx, $cy] = VehicleSilhouettes::centerOf($zone, $silhouette);
 
                 $inspection->marks()->create([
                     'zone' => $zone,
@@ -88,7 +90,7 @@ class RegisterCheckIn
      * @param  array<string, mixed>  $data
      * @param  list<array<string, mixed>>  $marks
      */
-    private function validate(Appointment $appointment, array $data, array $marks): void
+    private function validate(Appointment $appointment, array $data, array $marks, string $silhouette): void
     {
         $errors = [];
 
@@ -123,7 +125,7 @@ class RegisterCheckIn
         $activeTypes = DamageType::query()->where('is_active', true)->pluck('id')->all();
         foreach ($marks as $i => $mark) {
             $n = $i + 1;
-            if (! is_string($mark['zone'] ?? null) || ! VehicleSilhouettes::exists($mark['zone'])) {
+            if (! is_string($mark['zone'] ?? null) || ! VehicleSilhouettes::exists($mark['zone'], $silhouette)) {
                 $errors["marks.{$i}.zone"][] = __('inspections.errors.mark_zone', ['n' => $n]);
             }
             if (! in_array((int) ($mark['damage_type_id'] ?? 0), $activeTypes, true)) {

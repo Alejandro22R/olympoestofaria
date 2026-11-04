@@ -6,7 +6,7 @@ use App\Domain\Inspections\Actions\RegisterCheckIn;
 use App\Domain\Inspections\Actions\SendInspectionReport;
 use App\Domain\Inspections\Enums\ReportChannel;
 use App\Domain\Settings\CheckinSettings;
-use App\Mail\InspectionReportMail;
+use App\Mail\CustomerReportMail;
 use App\Models\Appointment;
 use App\Models\Customer;
 use App\Models\Vehicle;
@@ -31,7 +31,7 @@ beforeEach(function () {
 it('emails the report with the PDF and logs who, when and how', function () {
     $result = app(SendInspectionReport::class)->execute($this->inspection, ReportChannel::Email, $this->reception);
 
-    Mail::assertQueued(InspectionReportMail::class, fn (InspectionReportMail $m) => $m->hasTo('ana@example.com')
+    Mail::assertQueued(CustomerReportMail::class, fn (CustomerReportMail $m) => $m->hasTo('ana@example.com') && $m->report->is($this->inspection)
         && $m->locale === 'es');
 
     $send = $result['send'];
@@ -42,7 +42,7 @@ it('emails the report with the PDF and logs who, when and how', function () {
 });
 
 it('attaches the PDF to the email', function () {
-    $mail = new InspectionReportMail($this->inspection);
+    $mail = new CustomerReportMail($this->inspection);
 
     expect($mail->attachments())->toHaveCount(1);
     $mail->assertHasAttachment(
