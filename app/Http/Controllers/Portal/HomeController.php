@@ -6,6 +6,7 @@ use App\Domain\Settings\GeneralSettings;
 use App\Domain\Settings\PortalSettings;
 use App\Models\GalleryItem;
 use App\Models\Material;
+use App\Models\Review;
 use App\Models\ServiceType;
 use App\Models\VehicleModel;
 use App\Models\WorkflowStage;
@@ -33,6 +34,7 @@ class HomeController
             'materials' => Material::query()->where('is_active', true)->with(['variants' => fn ($q) => $q->where('is_active', true)])->get(),
             'brands' => VehicleModel::query()->where('is_active', true)->distinct()->orderBy('brand')->pluck('brand'),
             'stages' => WorkflowStage::query()->ordered()->where('visible_to_customer', true)->get(),
+            'reviews' => Review::query()->published()->with(['customer', 'media'])->limit(6)->get(),
         ]);
     }
 }

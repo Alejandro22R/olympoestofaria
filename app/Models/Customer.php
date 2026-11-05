@@ -13,15 +13,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-#[Fillable(['branch_id', 'user_id', 'name', 'email', 'phone', 'document_type', 'document_number', 'lgpd_consent_at', 'contact_opt_in_at', 'locale', 'notes'])]
+#[Fillable(['branch_id', 'user_id', 'name', 'email', 'phone', 'document_type', 'document_number', 'lgpd_consent_at', 'contact_opt_in_at', 'notification_preferences', 'unsubscribed_at', 'referral_code', 'referred_by_customer_id', 'locale', 'notes'])]
 #[Hidden(['document_number', 'document_hash'])]
 class Customer extends Model
 {
     /** @use HasFactory<CustomerFactory> */
-    use HasFactory, LogsActivity, SoftDeletes;
+    use HasFactory, LogsActivity, Notifiable, SoftDeletes;
 
     protected function casts(): array
     {
@@ -30,16 +32,31 @@ class Customer extends Model
             'document_number' => 'encrypted',
             'lgpd_consent_at' => 'datetime',
             'contact_opt_in_at' => 'datetime',
+            'notification_preferences' => 'array',
+            'unsubscribed_at' => 'datetime',
         ];
     }
 
     protected static function booted(): void
     {
+        static::creating(function (Customer $customer): void {
+            $customer->referral_code ??= static::newReferralCode();
+        });
+
         static::saving(function (Customer $customer): void {
             if ($customer->isDirty('document_number')) {
                 $customer->document_hash = static::hashDocument($customer->document_number);
             }
         });
+    }
+
+    public static function newReferralCode(): string
+    {
+        do {
+            $code = strtoupper(Str::random(6));
+        } while (static::query()->where('referral_code', $code)->exists());
+
+        return $code;
     }
 
     public static function hashDocument(?string $number): ?string

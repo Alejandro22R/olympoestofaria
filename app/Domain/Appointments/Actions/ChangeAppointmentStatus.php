@@ -4,6 +4,8 @@ namespace App\Domain\Appointments\Actions;
 
 use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Events\AppointmentChanged;
+use App\Domain\Notifications\Customer\CustomerEvents;
+use App\Domain\Notifications\Customer\MessageEvent;
 use App\Models\Appointment;
 use Illuminate\Validation\ValidationException;
 
@@ -32,6 +34,9 @@ class ChangeAppointmentStatus
         $appointment->save();
 
         AppointmentChanged::dispatch($appointment->id, 'status');
+        if ($to === AppointmentStatus::Cancelled) {
+            app(CustomerEvents::class)->appointment($appointment, MessageEvent::AppointmentCancelled, 'cancelled');
+        }
 
         return $appointment;
     }

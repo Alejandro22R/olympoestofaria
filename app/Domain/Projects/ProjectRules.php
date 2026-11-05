@@ -50,6 +50,7 @@ final class ProjectRules
             'contact.locale' => ['required', Rule::in(['pt_BR', 'es'])],
             'privacy' => ['accepted'],
             'contact_opt_in' => ['boolean'],
+            'referral' => ['nullable', 'string', 'max:16', 'alpha_num'],
         ];
     }
 

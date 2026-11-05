@@ -103,6 +103,7 @@ return [
         'errors' => [
             'no_pieces' => 'Selecione pelo menos uma peça.',
             'too_many' => 'Muitos envios. Tente novamente em :minutes minutos.',
+            'turnstile' => 'Confirme que você não é um robô e tente novamente.',
         ],
     ],
     'sent' => [

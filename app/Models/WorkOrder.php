@@ -147,6 +147,14 @@ class WorkOrder extends Model
         return $this->hasMany(Payment::class);
     }
 
+    /**
+     * @return HasOne<Review, $this>
+     */
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
+
     public function totalCents(): int
     {
         return (int) $this->items->sum('price_cents');

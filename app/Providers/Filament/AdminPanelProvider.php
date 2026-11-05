@@ -2,8 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
+use App\Filament\Pages\Auth\Login;
+use App\Http\Middleware\EnforceIdleTimeout;
+use App\Http\Middleware\EnsureTwoFactorWhenRequired;
 use App\Http\Middleware\SetLocale;
 use App\Support\Brand;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
@@ -30,11 +35,19 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
+            ->passwordReset()
+            ->profile(EditProfile::class, isSimple: false)
+            ->multiFactorAuthentication([
+                AppAuthentication::make()->recoverable()->brandName('Olympo'),
+            ], isRequired: true)
+            ->multiFactorAuthenticationRequiredMiddlewareName(EnsureTwoFactorWhenRequired::class)
             ->brandName('Olympo')
-            ->brandLogo(fn () => asset('images/brand/logo.svg'))
+            // Ajustes > Marca: logo claro para el tema claro y logo oscuro (por defecto) para el oscuro.
+            ->brandLogo(fn () => Brand::settings()?->logoLightUrl() ?? Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))
+            ->darkModeBrandLogo(fn () => Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))
             ->brandLogoHeight('2.25rem')
-            ->favicon(fn () => asset('favicon.svg'))
+            ->favicon(fn () => Brand::settings()?->faviconUrl() ?? asset('favicon.svg'))
             ->colors([
                 'primary' => Brand::primary(),
                 'gray' => Brand::gray(),
@@ -44,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 'info' => Brand::primary(),
             ])
             ->font('Manrope', provider: LocalFontProvider::class)
-            ->defaultThemeMode(ThemeMode::Dark)
+            ->defaultThemeMode(Brand::settings()?->default_theme === 'light' ? ThemeMode::Light : ThemeMode::Dark)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->unsavedChangesAlerts()
             ->databaseNotifications()
@@ -74,6 +87,8 @@ class AdminPanelProvider extends PanelProvider
             ->middleware([SetLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+                // Cierra la sesión tras el tiempo de inactividad de Ajustes > Seguridad.
+                EnforceIdleTimeout::class,
+            ], isPersistent: true);
     }
 }

@@ -1,0 +1,88 @@
+<?php
+
+return [
+    'events' => [
+        'project_received' => 'Projeto recebido',
+        'quote_sent' => 'Orçamento enviado',
+        'quote_reminder' => 'Lembrete de orçamento',
+        'quote_approved' => 'Orçamento aprovado',
+        'payment_approved' => 'Pagamento aprovado',
+        'payment_rejected' => 'Pagamento recusado',
+        'appointment_confirmed' => 'Agendamento confirmado',
+        'appointment_moved' => 'Agendamento alterado',
+        'appointment_cancelled' => 'Agendamento cancelado',
+        'appointment_reminder' => 'Lembrete de agendamento',
+        'checkin_report' => 'Termo de recepção',
+        'work_order_stage' => 'Avanço do serviço',
+        'work_order_ready' => 'Veículo pronto',
+        'delivery_report' => 'Termo de entrega',
+        'warranty_review' => 'Revisão da garantia',
+        'review_request' => 'Pedido de avaliação',
+    ],
+    'categories' => [
+        'transactional' => 'Obrigatório',
+        'updates' => 'Avanços',
+        'marketing' => 'Marketing',
+    ],
+    'channels' => [
+        'mail' => 'E-mail',
+        'whatsapp' => 'WhatsApp',
+    ],
+    'statuses' => [
+        'sent' => 'Enviado',
+        'failed' => 'Falhou',
+        'skipped' => 'Ignorado',
+    ],
+    'unsubscribe' => 'Não quero mais receber estes avisos',
+    'unsubscribe_page' => [
+        'title' => 'Cancelar avisos',
+        'text' => ':name, você deixará de receber avanços do serviço, lembretes e pedidos de avaliação.',
+        'confirm' => 'Confirmar cancelamento',
+        'done' => 'Pronto. Você não receberá mais avisos opcionais.',
+        'note' => 'Avisos obrigatórios (pagamentos, agendamentos e termos) continuam sendo enviados.',
+    ],
+    'whatsapp' => [
+        'not_configured' => 'Informe o ID do número e o token de acesso.',
+        'unreachable' => 'Não foi possível conectar à API do WhatsApp.',
+        'error' => 'A Meta respondeu com erro: :message',
+        'ok' => 'Conectado: :number (:name)',
+    ],
+    'templates' => [
+        'label' => 'Modelo de mensagem',
+        'plural' => 'Modelos de mensagem',
+        'fields' => [
+            'event' => 'Evento',
+            'channel' => 'Canal',
+            'locale' => 'Idioma',
+            'subject' => 'Assunto',
+            'body' => 'Mensagem',
+            'whatsapp_template' => 'Nome do modelo na Meta',
+            'whatsapp_language' => 'Idioma do modelo na Meta',
+            'whatsapp_params' => 'Ordem das variáveis no modelo da Meta',
+            'is_active' => 'Ativo',
+            'category' => 'Tipo',
+        ],
+        'help' => [
+            'body' => 'Variáveis disponíveis: :vars',
+            'whatsapp' => 'No WhatsApp a mensagem precisa ser um modelo aprovado pela Meta. O texto aqui é a referência; a ordem das variáveis define {{1}}, {{2}}…',
+        ],
+        'errors' => [
+            'unknown_variables' => 'Variáveis desconhecidas: :vars',
+        ],
+        'preview' => 'Prévia',
+    ],
+    'logs' => [
+        'label' => 'Envio',
+        'plural' => 'Registro de envios',
+        'fields' => [
+            'created_at' => 'Data',
+            'event' => 'Evento',
+            'channel' => 'Canal',
+            'recipient' => 'Destinatário',
+            'status' => 'Status',
+            'attempt' => 'Tentativa',
+            'error' => 'Erro',
+            'customer' => 'Cliente',
+        ],
+    ],
+];

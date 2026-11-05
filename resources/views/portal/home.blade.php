@@ -217,6 +217,25 @@
                     </div>
                 @endforeach
             </dl>
+
+            @if ($reviews->isNotEmpty())
+                <h2 class="mb-8 mt-20 text-center text-3xl font-bold md:text-4xl">{{ __('reviews.landing_title') }}</h2>
+                <ul data-stagger class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($reviews as $review)
+                        <li class="card flex flex-col gap-3">
+                            @if ($review->hasMedia('before') && $review->hasMedia('after'))
+                                <div class="grid grid-cols-2 gap-2">
+                                    <img src="{{ $review->getFirstMediaUrl('before', 'thumb') }}" alt="{{ __('reviews.fields.before') }}" loading="lazy" class="aspect-[4/3] w-full rounded-xl object-cover" width="320" height="240">
+                                    <img src="{{ $review->getFirstMediaUrl('after', 'thumb') }}" alt="{{ __('reviews.fields.after') }}" loading="lazy" class="aspect-[4/3] w-full rounded-xl object-cover" width="320" height="240">
+                                </div>
+                            @endif
+                            <p class="font-display text-lg text-brand-500" aria-label="{{ trans_choice('reviews.portal.stars', $review->rating, ['count' => $review->rating]) }}">{{ str_repeat('★', $review->rating) }}</p>
+                            @if ($review->comment)<blockquote class="text-steel-300">“{{ $review->comment }}”</blockquote>@endif
+                            <p class="mt-auto text-sm font-semibold">{{ $review->displayName() }}</p>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </section>
     @endif
 

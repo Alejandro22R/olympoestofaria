@@ -5,6 +5,7 @@ use App\Domain\Deliveries\Actions\RegisterDelivery;
 use App\Domain\Inspections\Actions\RegisterCheckIn;
 use App\Domain\Inspections\Enums\ReportChannel;
 use App\Domain\Reports\SendReport;
+use App\Domain\Settings\NotificationSettings;
 use App\Domain\Settings\WarrantySettings;
 use App\Domain\WorkOrders\Actions\CreateWorkOrder;
 use App\Domain\WorkOrders\Actions\MoveWorkOrder;
@@ -91,6 +92,11 @@ it('requires the final state of every check-in mark', function () {
 })->throws(ValidationException::class);
 
 it('sends the delivery report by WhatsApp with a signed link and logs it', function () {
+    // Solo el envío manual (el automático tiene su propia prueba).
+    $settings = app(NotificationSettings::class);
+    $settings->auto_send_delivery_report = false;
+    $settings->save();
+
     ($this->toReady)();
     $delivery = app(RegisterDelivery::class)->execute($this->order->fresh(), ['marks_status' => ($this->outcomes)()], $this->user);
 

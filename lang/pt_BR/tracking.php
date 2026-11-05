@@ -14,4 +14,9 @@ return [
     'balance_later' => 'O saldo é pago na entrega do veículo.',
     'send_link' => 'Enviar link de acompanhamento',
     'whatsapp' => 'Olá, :name! Acompanhe o serviço do seu veículo :plate na Olympo por aqui: :url',
+    'referral_title' => 'Indique um amigo',
+    'referral_text' => 'Compartilhe seu link: quem fizer um projeto por ele chega como sua indicação.',
+    'referral_copy' => 'Copiar link',
+    'referral_copied' => 'Link copiado',
+    'review_cta' => 'Avaliar o serviço',
 ];

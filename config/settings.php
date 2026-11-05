@@ -1,13 +1,19 @@
 <?php
 
 use App\Domain\Settings\AgendaSettings;
+use App\Domain\Settings\AlertSettings;
+use App\Domain\Settings\BrandSettings;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\GeneralSettings;
+use App\Domain\Settings\IntegrationSettings;
+use App\Domain\Settings\NotificationSettings;
 use App\Domain\Settings\PaymentSettings;
 use App\Domain\Settings\PortalSettings;
 use App\Domain\Settings\PricingSettings;
 use App\Domain\Settings\ProductionSettings;
+use App\Domain\Settings\SecuritySettings;
 use App\Domain\Settings\WarrantySettings;
+use App\Domain\Settings\WhatsAppSettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
@@ -30,6 +36,12 @@ return [
         PricingSettings::class,
         PortalSettings::class,
         PaymentSettings::class,
+        NotificationSettings::class,
+        WhatsAppSettings::class,
+        AlertSettings::class,
+        SecuritySettings::class,
+        BrandSettings::class,
+        IntegrationSettings::class,
     ],
 
     /*

@@ -3,7 +3,9 @@
 namespace App\Domain\Deliveries\Actions;
 
 use App\Domain\Deliveries\Enums\MarkOutcome;
+use App\Domain\Reports\SendReport;
 use App\Domain\Settings\GeneralSettings;
+use App\Domain\Settings\NotificationSettings;
 use App\Domain\Settings\WarrantySettings;
 use App\Domain\WorkOrders\Enums\WorkOrderStatus;
 use App\Domain\WorkOrders\Events\WorkOrderMoved;
@@ -91,7 +93,13 @@ class RegisterDelivery
 
         WorkOrderMoved::dispatch($workOrder->id, $workOrder->workflow_stage_id, WorkOrderStatus::Delivered->value);
 
-        return $this->report->execute($delivery);
+        $delivery = $this->report->execute($delivery);
+
+        if (app(NotificationSettings::class)->auto_send_delivery_report) {
+            app(SendReport::class)->automatic($delivery);
+        }
+
+        return $delivery;
     }
 
     /**

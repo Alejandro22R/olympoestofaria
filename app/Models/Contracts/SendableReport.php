@@ -25,6 +25,9 @@ interface SendableReport
 
     public function customerReportUrl(int $days): string;
 
+    /** @return mixed */
+    public function getKey();
+
     /**
      * Registra un envío (canal, destinatario, quién y cuándo).
      *

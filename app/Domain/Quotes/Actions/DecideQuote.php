@@ -3,6 +3,7 @@
 namespace App\Domain\Quotes\Actions;
 
 use App\Domain\Auth\Permission;
+use App\Domain\Notifications\Customer\CustomerEvents;
 use App\Domain\Notifications\StaffNotifier;
 use App\Domain\Projects\Actions\ChangeProjectStatus;
 use App\Domain\Projects\Enums\ProjectStatus;
@@ -40,6 +41,7 @@ class DecideQuote
         });
 
         $this->notify($quote, 'quote_approved', 'success');
+        app(CustomerEvents::class)->quoteApproved($quote);
 
         return $quote;
     }

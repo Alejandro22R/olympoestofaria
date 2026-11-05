@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             BranchSeeder::class,
             CatalogSeeder::class,
             CheckinCatalogSeeder::class,
+            MessageTemplateSeeder::class,
             SilhouetteSeeder::class,
             ProductionSeeder::class,
         ]);

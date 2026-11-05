@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Alerts\DiskUsage;
 use App\Domain\Auth\Role;
 use App\Domain\Quotes\Actions\CreateQuote;
 use App\Domain\Quotes\Actions\SaveQuote;
@@ -20,7 +21,17 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    ->beforeEach(fn () => $this->seed(RolesAndPermissionsSeeder::class))
+    ->beforeEach(function () {
+        $this->seed(RolesAndPermissionsSeeder::class);
+        // El disco real del entorno no debe disparar alertas en las pruebas.
+        app()->instance(DiskUsage::class, new class extends DiskUsage
+        {
+            public function freePercent(): ?float
+            {
+                return 50.0;
+            }
+        });
+    })
     ->in('Feature');
 
 pest()->extend(TestCase::class)->in('Unit');

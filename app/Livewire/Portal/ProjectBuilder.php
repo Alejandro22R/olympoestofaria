@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Portal;
 
+use App\Domain\Integrations\Turnstile;
 use App\Domain\Pricing\Estimate;
 use App\Domain\Pricing\EstimateCalculator;
 use App\Domain\Projects\Actions\SubmitProject;
@@ -68,9 +69,20 @@ class ProjectBuilder extends Component
     /** Honeypot contra spam: los humanos no lo ven ni lo llenan. */
     public string $website = '';
 
+    /** Código de referido (?ref=CODIGO): se guarda en sesión hasta enviar. */
+    #[Session(key: 'builder.referral')]
+    public ?string $referral = null;
+
+    /** Token de Cloudflare Turnstile (solo si está activo en Ajustes > Integraciones). */
+    public ?string $turnstileToken = null;
+
     public function mount(): void
     {
         $this->contact['locale'] = app()->getLocale();
+        $ref = request()->query('ref');
+        if (is_string($ref) && preg_match('/^[A-Za-z0-9]{4,16}$/', $ref)) {
+            $this->referral = strtoupper($ref);
+        }
         $preselect = request()->query('servico');
         if (is_string($preselect) && ($service = ServiceType::query()->where('slug', $preselect)->where('is_active', true)->first())) {
             $this->selection[$service->id] ??= null;
@@ -157,6 +169,12 @@ class ProjectBuilder extends Component
             }],
         ]);
 
+        if (! app(Turnstile::class)->verify($this->turnstileToken, request()->ip())) {
+            $this->turnstileToken = null;
+            $this->dispatch('turnstile-reset');
+            throw ValidationException::withMessages(['turnstile' => __('portal.builder.errors.turnstile')]);
+        }
+
         RateLimiter::hit($key, 3600);
 
         $project = app(SubmitProject::class)->execute([
@@ -167,6 +185,7 @@ class ProjectBuilder extends Component
             'contact' => $this->contact,
             'privacy' => $this->privacy,
             'contact_opt_in' => $this->contact_opt_in,
+            'referral' => $this->referral,
         ]);
 
         $this->resetDraft();
@@ -217,8 +236,8 @@ class ProjectBuilder extends Component
 
     private function resetDraft(): void
     {
-        $this->reset(['step', 'vehicle', 'selection', 'stitching', 'notes', 'privacy']);
-        foreach (['step', 'vehicle', 'selection', 'stitching', 'notes', 'contact'] as $key) {
+        $this->reset(['step', 'vehicle', 'selection', 'stitching', 'notes', 'privacy', 'referral', 'turnstileToken']);
+        foreach (['step', 'vehicle', 'selection', 'stitching', 'notes', 'contact', 'referral'] as $key) {
             session()->forget('builder.'.$key);
         }
     }
@@ -299,6 +318,7 @@ class ProjectBuilder extends Component
     {
         return view('livewire.portal.project-builder', [
             'showEstimate' => app(PricingSettings::class)->show_estimate,
+            'turnstileSiteKey' => app(Turnstile::class)->enabled() ? app(Turnstile::class)->siteKey() : null,
             'stitchingColors' => ['#C9C9C9', '#FFFFFF', '#0B8FD9', '#D64545', '#E0A100', '#111111'],
         ])->title(__('portal.builder.title').' · Olympo');
     }

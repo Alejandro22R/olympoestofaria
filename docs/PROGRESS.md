@@ -102,3 +102,57 @@
 **Para conectar en real:** ver "Conectar Mercado Pago (Pix)" en el README. Desde este entorno de desarrollo no hay salida de red a `api.mercadopago.com`, así que la prueba con credenciales reales debe hacerse en el servidor.
 
 **Despliegue:** ejecutar `php artisan settings:clear-cache` después de migrar.
+
+## Fase 6: Comunicación y crecimiento ✅
+
+- **Avisos al cliente, un solo sistema multicanal** (`CustomerNotifier` → notificación en cola `CustomerMessage` → `CustomerChannel`):
+  - Canales WhatsApp Cloud API (Meta) y correo, en el orden de Ajustes. Si uno falla y el respaldo está activo, prueba el siguiente. Si todos fallan, la cola reintenta (1, 5 y 15 min).
+  - Cada intento queda en el **registro de envíos** (`notification_logs`) con canal, estado, error e id del proveedor. El registro se depura según los días de retención.
+  - **Idempotencia**: un aviso ya entregado no se repite (clave por hecho: `payment:12:approved`, `appointment:5:…`).
+  - **Consentimiento**: los transaccionales (pagos, citas, actas) siempre salen. Los avances respetan la baja. El marketing (pedido de reseña, revisión de garantía) exige opt-in. Los correos opcionales llevan enlace de baja firmado; el GET solo muestra la confirmación.
+  - **Horario silencioso**: avances y marketing esperan a que termine. Los transaccionales salen al momento.
+- **Plantillas editables** (Ajustes > Modelos de mensaje):
+  - Por evento, canal e idioma (pt-BR/es), con vista previa y validación de variables (`{{nome}}`, `{{placa}}`…).
+  - En WhatsApp se indica el nombre de la plantilla aprobada en Meta y el orden de sus parámetros.
+- **Catálogo de eventos** conectado al dominio: proyecto recibido, cotización enviada, aprobada y recordatorio, pago aprobado o rechazado, cita confirmada, movida, cancelada y recordatorio (p. ej. 24 h y 2 h; solo el más cercano), actas de recepción y entrega, avance de etapa (solo etapas con "avisa al cliente"), auto listo con saldo, revisión de garantía y pedido de reseña.
+  - Las actas se envían **automáticamente** al terminar el check-in o la entrega (activable en Ajustes).
+  - Con WhatsApp conectado y opt-in salen solas por la API; si no, se mantiene el enlace wa.me.
+- **Alertas internas con escalamiento** (`olympo:alerts`, cada hora; umbrales en Ajustes > Alertas automáticas):
+  - Comerciales: solicitud sin respuesta, cotización sin respuesta (también recuerda al cliente), anticipo vencido, saldo vencido tras la entrega.
+  - Técnicas, solo al dueño y por correo: tareas fallidas, webhooks con error, disco casi lleno.
+  - Si nadie abre una alerta en N horas, **se escala al dueño** (y por correo si así se configura).
+  - Cada persona elige en **Mi perfil** qué tipos de aviso recibe también por correo.
+- **Avisos programados** (`olympo:customer-messages`, cada 15 min): recordatorios de cita, revisión de garantía y pedido de reseña N días después de la entrega.
+- **Reseñas con fotos antes/después**:
+  - El cliente califica de 1 a 5 desde el enlace firmado (`/avaliar/{orden}`) y decide si permite publicarla.
+  - El taller la modera en `/admin/reviews`, elige las fotos y la publica.
+  - La landing muestra las publicadas en "Prueba social", con nombre e inicial del apellido.
+- **Referidos y leads**:
+  - Cada cliente tiene un código, visible en su página de seguimiento como enlace `/projeto?ref=CODIGO`.
+  - El proyecto y el cliente nuevo quedan vinculados a quien lo recomendó.
+  - El embudo (nuevo → contactado → cotizado → aprobado / perdido) aparece en Reportes.
+- **Usuarios y roles** (Ajustes > Equipo):
+  - Invitar con enlace para definir la contraseña, cambiar rol e idioma, desactivar (no se borra) y reiniciar el 2FA.
+  - Siempre queda al menos un dueño activo y nadie se quita a sí mismo el rol de dueño.
+  - **Matriz de permisos editable** para recepción y tapicero, auditada. Ajustes y Usuarios son exclusivos del dueño. El seeder ya no pisa la matriz editada.
+- **Seguridad**:
+  - Verificación en dos pasos con app autenticadora y códigos de recuperación en Mi perfil; puede hacerse **obligatoria para todo el equipo**.
+  - Cierre por inactividad, intentos de login por minuto configurables, recuperación de contraseña y registro del último acceso.
+- **Marca y apariencia**:
+  - Logo oscuro y claro, favicon, color principal (los tonos 700/800 se derivan y se exige contraste AA con texto blanco) y tema por defecto del panel.
+  - "Reducir animaciones" para todo el portal. Panel y portal usan el color y el logo configurados.
+- **Integraciones**:
+  - Estado y botón de prueba de Mercado Pago, WhatsApp, correo (envía un correo de prueba), almacenamiento privado, Reverb y Turnstile.
+  - **Cloudflare Turnstile** opcional en el constructor; el honeypot y el límite por IP siguen activos.
+- **Dashboard del dueño**: ingresos del mes contra el mes anterior, conversión de cotizaciones, solicitudes del mes con referidos, órdenes abiertas, stock crítico y gráfico de ingresos de 12 meses. Recepción y tapicero no ven cifras.
+- **Reportes** (`/admin/reports`, permiso `reports.view`), por periodo: servicios más vendidos, marcas frecuentes, tiempo promedio por trabajo, rentabilidad (servicios menos material consumido a costo de inventario) y embudo de leads.
+- Permisos nuevos: `reviews.manage` (dueño y recepción), `reports.view` y `users.manage` (dueño).
+
+**Aceptación:** el dueño ve un dashboard con ingresos, conversión y stock crítico. Cubierto por pruebas (444 en verde), con WhatsApp y Turnstile simulados (`Http::fake`). Pint y Larastan sin errores.
+
+**Para conectar en real:** ver "Conectar WhatsApp Cloud API" en el README. Las plantillas de Meta deben crearse y aprobarse antes de activar el canal. Mientras tanto los avisos salen por correo (con SMTP configurado en `.env`).
+
+**Fuera de esta fase:**
+- Sentry: el estado se muestra, pero se configura en la Fase 7.
+- Mercado Livre: queda para cuando se defina el uso.
+- Push web: opcional en el plan; hoy no está.

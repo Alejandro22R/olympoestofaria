@@ -1,8 +1,10 @@
 <?php
 
 use App\Domain\Alerts\RunScheduledAlerts;
+use App\Domain\Notifications\Customer\ScheduledCustomerMessages;
 use App\Domain\Payments\Actions\ReconcilePayments;
 use App\Domain\Quotes\Actions\ExpireQuotes;
+use App\Models\NotificationLog;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
@@ -28,3 +30,13 @@ Artisan::command('olympo:quotes:expire', function (ExpireQuotes $expire) {
 
 Schedule::command('olympo:payments:reconcile')->everyTenMinutes()->withoutOverlapping();
 Schedule::command('olympo:quotes:expire')->hourly();
+
+// Avisos programados al cliente (Fase 6): recordatorios de cita, revisión de garantía y pedido de reseña.
+Artisan::command('olympo:customer-messages', function (ScheduledCustomerMessages $messages) {
+    foreach ($messages->execute() as $key => $count) {
+        $this->line("{$key}: {$count}");
+    }
+})->purpose('Envía recordatorios de cita, revisiones de garantía y pedidos de reseña (sin repetir)');
+
+Schedule::command('olympo:customer-messages')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('model:prune', ['--model' => [NotificationLog::class]])->daily();

@@ -44,6 +44,9 @@ class RunScheduledAlerts
             'due_soon' => $this->dueSoon(),
             'stalled' => $this->stalled(),
             'unconfirmed' => $this->unconfirmedAppointments(),
+            ...app(CommercialAlerts::class)->execute(),
+            ...app(TechnicalAlerts::class)->execute(),
+            'escalated' => app(EscalateAlerts::class)->execute(),
         ];
     }
 
@@ -56,10 +59,12 @@ class RunScheduledAlerts
     {
         $count = 0;
         foreach (InventoryItem::query()->belowMinimum()->get() as $item) {
-            if (! AlertLog::claim("low_stock:{$item->id}:{$this->today()}", 'low_stock')) {
+            $key = "low_stock:{$item->id}:{$this->today()}";
+            if (! AlertLog::claim($key, 'low_stock')) {
                 continue;
             }
             $this->notifier->notify(Permission::InventoryManage, new StaffAlert(
+                alertKey: $key,
                 type: 'low_stock',
                 titleKey: 'notifications.low_stock',
                 params: ['item' => $item->name, 'stock' => RecordInventoryMovement::format($item->stock), 'unit' => $item->unit->getLabel(), 'min' => RecordInventoryMovement::format($item->min_stock)],
@@ -83,10 +88,11 @@ class RunScheduledAlerts
             ->get();
 
         foreach ($orders as $order) {
-            if (! AlertLog::claim("late:{$order->id}:{$this->today()}", 'late')) {
+            $key = "late:{$order->id}:{$this->today()}";
+            if (! AlertLog::claim($key, 'late')) {
                 continue;
             }
-            $this->orderAlert($order, 'work_order_late', 'danger', Permission::WorkOrdersManage);
+            $this->orderAlert($order, 'work_order_late', 'danger', Permission::WorkOrdersManage, $key);
             $count++;
         }
 
@@ -160,10 +166,12 @@ class RunScheduledAlerts
             ->get();
 
         foreach ($appointments as $appointment) {
-            if (! AlertLog::claim("unconfirmed:{$appointment->id}:{$appointment->scheduled_at->timestamp}", 'unconfirmed')) {
+            $key = "unconfirmed:{$appointment->id}:{$appointment->scheduled_at->timestamp}";
+            if (! AlertLog::claim($key, 'unconfirmed')) {
                 continue;
             }
             $this->notifier->notify(Permission::AppointmentsManage, new StaffAlert(
+                alertKey: $key,
                 type: 'unconfirmed_appointment',
                 titleKey: 'notifications.unconfirmed_appointment',
                 params: ['plate' => $appointment->vehicle->formattedPlate(), 'time' => $appointment->scheduled_at->setTimezone($tz)->format('H:i')],
@@ -178,9 +186,10 @@ class RunScheduledAlerts
         return $count;
     }
 
-    private function orderAlert(WorkOrder $order, string $key, string $color, Permission $permission): void
+    private function orderAlert(WorkOrder $order, string $key, string $color, Permission $permission, ?string $alertKey = null): void
     {
         $this->notifier->notify($permission, new StaffAlert(
+            alertKey: $alertKey,
             type: $key,
             titleKey: 'notifications.'.$key,
             params: [

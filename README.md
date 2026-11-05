@@ -84,7 +84,7 @@ php artisan settings:clear-cache
 
 Los ajustes se leen con caché; si se agregan campos nuevos de ajustes, la caché vieja debe limpiarse.
 
-Procesos permanentes (Supervisor): `php artisan horizon` (colas: notificaciones, correos, conversión de videos), `php artisan reverb:start` (WebSockets) y el scheduler (`* * * * * php artisan schedule:run`), que ejecuta las alertas, la conciliación de pagos y el vencimiento de cotizaciones.
+Procesos permanentes (Supervisor): `php artisan horizon` (colas: notificaciones, correos, conversión de videos), `php artisan reverb:start` (WebSockets) y el scheduler (`* * * * * php artisan schedule:run`), que ejecuta las alertas, los avisos programados al cliente (recordatorios, garantía, reseñas), la conciliación de pagos, el vencimiento de cotizaciones y la depuración del registro de envíos.
 
 ## Conectar Mercado Pago (Pix)
 
@@ -97,6 +97,18 @@ Mercado Pago viene **desactivado**. Mientras esté así, el taller registra los 
 5. Para cobrar de verdad: reemplaza las credenciales por las de **producción**, cambia el modo a **Produção** (pide confirmación explícita) y actualiza el webhook de producción.
 
 Las credenciales se guardan cifradas en la base de datos, nunca se muestran de vuelta y no quedan en la auditoría. Dejar un campo de secreto vacío al guardar conserva el valor actual.
+
+## Conectar WhatsApp Cloud API
+
+WhatsApp viene **desactivado**. Mientras esté así, los avisos salen por correo y las actas usan el enlace wa.me para que el equipo las envíe a mano.
+
+1. En [Meta for Developers](https://developers.facebook.com/) crea una app de tipo **Business**, agrega el producto **WhatsApp** y registra el número del taller.
+2. Crea un **usuario del sistema** en el Business Manager con permiso `whatsapp_business_messaging` y genera un **token permanente**.
+3. En el **WhatsApp Manager**, crea las plantillas de mensaje con el nombre `olympo_{evento}` (por ejemplo `olympo_payment_approved`, `olympo_work_order_ready`) en `pt_BR` y `es`. El texto de referencia y el orden de las variables (`{{1}}`, `{{2}}`…) de cada una están en **Ajustes > Modelos de mensagem** (canal WhatsApp).
+4. En **Ajustes > WhatsApp**: pega el **ID del número de teléfono**, el ID de la cuenta y el token, activa el canal y usa **Testar conexão**.
+5. En **Ajustes > Notificações** elige el canal principal (WhatsApp o correo), el respaldo, los recordatorios y el horario silencioso.
+
+Solo reciben WhatsApp los clientes que aceptaron el contacto (opt-in del constructor o de la ficha). El token se guarda cifrado y nunca se muestra de vuelta.
 
 ## Usuarios de demostración
 

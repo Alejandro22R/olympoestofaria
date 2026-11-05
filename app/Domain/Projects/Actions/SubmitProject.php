@@ -3,6 +3,7 @@
 namespace App\Domain\Projects\Actions;
 
 use App\Domain\Auth\Permission;
+use App\Domain\Notifications\Customer\CustomerEvents;
 use App\Domain\Notifications\StaffNotifier;
 use App\Domain\Pricing\EstimateCalculator;
 use App\Domain\Projects\Enums\ProjectStatus;
@@ -60,8 +61,16 @@ class SubmitProject
             }
             $customer->save();
 
+            $referrer = filled($validated['referral'] ?? null)
+                ? Customer::query()->where('referral_code', strtoupper((string) $validated['referral']))->whereKeyNot($customer->id)->first()
+                : null;
+            if ($referrer !== null && $customer->referred_by_customer_id === null && $customer->wasRecentlyCreated) {
+                $customer->forceFill(['referred_by_customer_id' => $referrer->id])->save();
+            }
+
             return $customer->projects()->create([
                 'branch_id' => $customer->branch_id,
+                'referred_by_customer_id' => $referrer?->id,
                 'vehicle_model_id' => $validated['vehicle']['vehicle_model_id'] ?? null,
                 'status' => ProjectStatus::Submitted,
                 'configuration' => [
@@ -85,6 +94,7 @@ class SubmitProject
         });
 
         LeadCreated::dispatch($project->id);
+        app(CustomerEvents::class)->projectReceived($project);
         $this->notifier->notify(Permission::LeadsManage, new StaffAlert(
             type: 'lead_created',
             titleKey: 'notifications.lead_created',

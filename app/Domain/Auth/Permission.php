@@ -4,7 +4,7 @@ namespace App\Domain\Auth;
 
 /**
  * Catálogo de permisos del sistema. La matriz rol → permisos vive en
- * RolesAndPermissionsSeeder y será editable en Ajustes > Usuarios y roles (Fase 6).
+ * RolesAndPermissionsSeeder (valores iniciales); el dueño la edita en Ajustes > Roles y permisos.
  */
 enum Permission: string
 {
@@ -41,6 +41,10 @@ enum Permission: string
     case InventoryView = 'inventory.view';
     case InventoryManage = 'inventory.manage';
 
+    case ReviewsManage = 'reviews.manage';
+    case ReportsView = 'reports.view';
+    case UsersManage = 'users.manage';
+
     /**
      * @return array<string, list<self>>
      */
@@ -61,6 +65,7 @@ enum Permission: string
                 self::WorkOrdersView, self::WorkOrdersManage, self::WorkOrdersProgress, self::DeliveriesManage,
                 self::InventoryView, self::InventoryManage,
                 self::LeadsView, self::LeadsManage, self::MediaManage,
+                self::ReviewsManage,
             ],
             Role::Upholsterer->value => [
                 self::AccessPanel,

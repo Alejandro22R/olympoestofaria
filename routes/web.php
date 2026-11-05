@@ -6,11 +6,13 @@ use App\Http\Controllers\Portal\CatalogController;
 use App\Http\Controllers\Portal\HomeController;
 use App\Http\Controllers\Portal\ProjectSentController;
 use App\Http\Controllers\Portal\ShowProgressPhoto;
+use App\Http\Controllers\Portal\UnsubscribeController;
 use App\Http\Controllers\ShowDeliveryReport;
 use App\Http\Controllers\ShowInspectionReport;
 use App\Http\Middleware\SetLocale;
 use App\Livewire\Portal\ProjectBuilder;
 use App\Livewire\Portal\QuotePage;
+use App\Livewire\Portal\ReviewPage;
 use App\Livewire\Portal\TrackingPage;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +27,10 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::middleware('customer.link')->group(function () {
         Route::get('orcamento/{quote}', QuotePage::class)->name('portal.quote');
         Route::get('acompanhar/{workOrder}', TrackingPage::class)->name('portal.tracking');
+        Route::get('avaliar/{workOrder}', ReviewPage::class)->name('portal.review');
     });
+    Route::get('descadastrar/{customer}', [UnsubscribeController::class, 'show'])->middleware(['signed', 'throttle:30,1'])->name('portal.unsubscribe');
+    Route::post('descadastrar/{customer}', [UnsubscribeController::class, 'store'])->middleware(['signed', 'throttle:30,1']);
     Route::get('acompanhar/{workOrder}/fotos/{update}/{index}', ShowProgressPhoto::class)
         ->middleware('auth')->whereNumber('index')->name('portal.tracking.photo');
 });

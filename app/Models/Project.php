@@ -15,7 +15,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ProjectStatus $status
  * @property array{vehicle: array<string, mixed>, pieces: list<array<string, mixed>>, stitching?: ?string, notes?: ?string} $configuration
  */
-#[Fillable(['branch_id', 'customer_id', 'vehicle_id', 'vehicle_model_id', 'status', 'configuration', 'estimate_min_cents', 'estimate_max_cents', 'source', 'notes', 'lost_reason', 'submitted_at'])]
+#[Fillable(['branch_id', 'customer_id', 'referred_by_customer_id', 'vehicle_id', 'vehicle_model_id', 'status', 'configuration', 'estimate_min_cents', 'estimate_max_cents', 'source', 'notes', 'lost_reason', 'submitted_at'])]
 class Project extends Model
 {
     use LogsActivity;

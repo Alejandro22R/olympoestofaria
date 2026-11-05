@@ -4,6 +4,7 @@ use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Auth\Role;
 use App\Domain\Inspections\Actions\RegisterCheckIn;
 use App\Domain\Inspections\Enums\ReportChannel;
+use App\Domain\Settings\NotificationSettings;
 use App\Filament\Resources\Appointments\Pages\CheckInAppointment;
 use App\Filament\Resources\Inspections\Pages\ViewInspection;
 use App\Models\Appointment;
@@ -86,6 +87,11 @@ it('blocks the check-in page for the upholsterer', function () {
 });
 
 it('sends the report by email from the inspection page and shows the log', function () {
+    // Solo el envío manual (el automático tiene su propia prueba).
+    $settings = app(NotificationSettings::class);
+    $settings->auto_send_checkin_report = false;
+    $settings->save();
+
     $inspection = app(RegisterCheckIn::class)->execute($this->appointment, [
         'mileage_km' => 31_000, 'fuel_level' => 'half', 'lgpd_consent' => true, 'marks' => [],
     ], $this->reception);

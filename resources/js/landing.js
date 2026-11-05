@@ -9,7 +9,8 @@ import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.hasAttribute('data-reduce-motion');
 let lenis = null;
 let ctx = null;
 

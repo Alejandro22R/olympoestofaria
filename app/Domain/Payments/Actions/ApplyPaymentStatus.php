@@ -5,6 +5,7 @@ namespace App\Domain\Payments\Actions;
 use App\Domain\Appointments\Actions\ChangeAppointmentStatus;
 use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Auth\Permission;
+use App\Domain\Notifications\Customer\CustomerEvents;
 use App\Domain\Notifications\StaffNotifier;
 use App\Domain\Payments\BillingSummary;
 use App\Domain\Payments\Enums\PaymentStatus;
@@ -56,6 +57,9 @@ class ApplyPaymentStatus
         if ($changed) {
             PaymentUpdated::dispatch($payment->id, $payment->customer_id, $to->value);
             $this->notifyStaff($payment, $to);
+            if (in_array($to, [PaymentStatus::Approved, PaymentStatus::Rejected], true)) {
+                app(CustomerEvents::class)->payment($payment, $to === PaymentStatus::Approved);
+            }
         }
 
         return $changed;

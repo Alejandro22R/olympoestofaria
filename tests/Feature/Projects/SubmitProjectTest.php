@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Auth\Role;
+use App\Domain\Notifications\Customer\MessageEvent;
 use App\Domain\Projects\Actions\ChangeProjectStatus;
 use App\Domain\Projects\Actions\SubmitProject;
 use App\Domain\Projects\Enums\ProjectStatus;
@@ -9,6 +10,7 @@ use App\Models\Customer;
 use App\Models\MaterialVariant;
 use App\Models\Project;
 use App\Models\ServiceType;
+use App\Notifications\CustomerMessage;
 use App\Notifications\StaffAlert;
 use Database\Seeders\CatalogSeeder;
 use Illuminate\Support\Facades\Event;
@@ -116,4 +118,23 @@ it('follows the lead status machine', function () {
 
     app(ChangeProjectStatus::class)->execute($project, ProjectStatus::Lost, 'Achou caro');
     expect($project->fresh()->lost_reason)->toBe('Achou caro');
+});
+
+it('ignores an unknown or self referral code', function () {
+    Notification::fake();
+    $project = app(SubmitProject::class)->execute(projectData(['referral' => 'NOPE99']));
+
+    expect($project->referred_by_customer_id)->toBeNull()
+        ->and($project->customer->referral_code)->toHaveLength(6);
+
+    $again = app(SubmitProject::class)->execute(projectData(['referral' => $project->customer->referral_code]));
+    expect($again->referred_by_customer_id)->toBeNull();
+});
+
+it('tells the customer the project was received', function () {
+    Notification::fake();
+    $project = app(SubmitProject::class)->execute(projectData());
+
+    Notification::assertSentTo($project->customer, CustomerMessage::class,
+        fn ($n) => $n->event === MessageEvent::ProjectReceived && $n->idempotencyKey === "project:{$project->id}:received");
 });

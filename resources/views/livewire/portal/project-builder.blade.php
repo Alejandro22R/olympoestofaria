@@ -188,6 +188,16 @@
                         <input type="checkbox" wire:model="contact_opt_in" class="mt-1 accent-brand-500">
                         <span>{{ __('portal.builder.summary.opt_in') }}</span>
                     </label>
+                    @if ($turnstileSiteKey)
+                        {{-- Cloudflare Turnstile: el script se carga solo aquí y solo si está activo. --}}
+                        <div class="sm:col-span-2" wire:ignore
+                             x-data="{ id: null, render() { this.id = window.turnstile.render($refs.box, { sitekey: @js($turnstileSiteKey), theme: 'dark', callback: (t) => $wire.set('turnstileToken', t, false) }) } }"
+                             x-init="window.turnstile ? render() : (() => { const s = document.createElement('script'); s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.async = true; s.onload = () => render(); document.head.appendChild(s) })()"
+                             x-on:turnstile-reset.window="window.turnstile && window.turnstile.reset(id)">
+                            <div x-ref="box"></div>
+                        </div>
+                        @error('turnstile') <span class="text-sm text-danger sm:col-span-2">{{ $message }}</span> @enderror
+                    @endif
                     <div class="sm:col-span-2">
                         <button type="submit" class="btn-primary w-full sm:w-auto" wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="submit">{{ __('portal.builder.summary.submit') }}</span>

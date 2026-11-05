@@ -80,4 +80,23 @@
             @endif
         @endif
     </section>
+
+    @if ($workOrder->status === \App\Domain\WorkOrders\Enums\WorkOrderStatus::Delivered)
+        <p class="mt-6"><a href="{{ route('portal.review', $workOrder) }}" class="btn-secondary">{{ __('tracking.review_cta') }}</a></p>
+    @endif
+
+    {{-- Referidos --}}
+    @if ($referralUrl)
+        <section class="card mt-6" aria-labelledby="referral-title" x-data="{ copied: false }">
+            <h2 id="referral-title" class="mb-1 text-xl font-semibold">{{ __('tracking.referral_title') }}</h2>
+            <p class="mb-3 text-sm text-steel-300">{{ __('tracking.referral_text') }}</p>
+            <div class="flex flex-col gap-2 sm:flex-row">
+                <input type="text" readonly value="{{ $referralUrl }}" class="input flex-1" aria-label="{{ __('tracking.referral_title') }}">
+                <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText(@js($referralUrl)); copied = true; setTimeout(() => copied = false, 2000)">
+                    <span x-show="!copied">{{ __('tracking.referral_copy') }}</span>
+                    <span x-show="copied" x-cloak>{{ __('tracking.referral_copied') }}</span>
+                </button>
+            </div>
+        </section>
+    @endif
 </div>

@@ -6,7 +6,9 @@ use App\Domain\Appointments\Actions\ChangeAppointmentStatus;
 use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Inspections\Enums\FuelLevel;
 use App\Domain\Inspections\Support\VehicleSilhouettes;
+use App\Domain\Reports\SendReport;
 use App\Domain\Settings\CheckinSettings;
+use App\Domain\Settings\NotificationSettings;
 use App\Models\Appointment;
 use App\Models\ChecklistItem;
 use App\Models\DamageType;
@@ -83,7 +85,13 @@ class RegisterCheckIn
             return $inspection;
         });
 
-        return $this->generateReport->execute($inspection);
+        $inspection = $this->generateReport->execute($inspection);
+
+        if (app(NotificationSettings::class)->auto_send_checkin_report) {
+            app(SendReport::class)->automatic($inspection);
+        }
+
+        return $inspection;
     }
 
     /**

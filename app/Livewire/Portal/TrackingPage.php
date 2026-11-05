@@ -77,6 +77,7 @@ class TrackingPage extends Component
             'billing' => BillingSummary::forWorkOrder($this->workOrder),
             'pendingPix' => $pending?->isPayableOnline() ? $pending : null,
             'balanceOpen' => $this->balanceOpen(),
+            'referralUrl' => ($code = $this->workOrder->vehicle->customer->referral_code) ? route('portal.builder', ['ref' => $code]) : null,
         ])->title($this->workOrder->number().' · Olympo');
     }
 }

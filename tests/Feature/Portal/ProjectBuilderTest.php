@@ -1,11 +1,14 @@
 <?php
 
+use App\Domain\Settings\IntegrationSettings;
 use App\Livewire\Portal\ProjectBuilder;
+use App\Models\Customer;
 use App\Models\MaterialVariant;
 use App\Models\Project;
 use App\Models\ServiceType;
 use App\Models\VehicleModel;
 use Database\Seeders\CatalogSeeder;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -112,4 +115,51 @@ it('shows the confirmation only with a valid signature', function () {
     $this->get(route('portal.project.sent', $project))->assertForbidden();
     $this->get(URL::temporarySignedRoute('portal.project.sent', now()->addHour(), ['project' => $project->id]))
         ->assertOk()->assertSee($project->number())->assertSee('Couro natural Nappa');
+});
+
+it('keeps the referral code from the link and credits the referrer', function () {
+    $referrer = Customer::factory()->create();
+
+    Livewire::withQueryParams(['ref' => strtolower($referrer->referral_code)])->test(ProjectBuilder::class)
+        ->assertSet('referral', $referrer->referral_code);
+
+    readyBuilder()->set('referral', $referrer->referral_code)
+        ->set('contact.name', 'Bia')->set('contact.phone', '+55 11 91234-5678')->set('privacy', true)
+        ->call('submit')->assertHasNoErrors();
+
+    $project = Project::query()->latest('id')->first();
+    expect($project->referred_by_customer_id)->toBe($referrer->id)
+        ->and($project->customer->referred_by_customer_id)->toBe($referrer->id);
+});
+
+it('requires a valid Turnstile token when it is enabled', function () {
+    $s = app(IntegrationSettings::class);
+    $s->turnstile_enabled = true;
+    $s->turnstile_site_key = 'site-key';
+    $s->turnstile_secret = 'secret';
+    $s->save();
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false])]);
+
+    readyBuilder()->assertSee('challenges.cloudflare.com')
+        ->set('contact.name', 'Ana')->set('contact.phone', '+55 11 98765-4321')->set('privacy', true)
+        ->set('turnstileToken', 'bad')
+        ->call('submit')->assertHasErrors('turnstile');
+
+    expect(Project::count())->toBe(0);
+});
+
+it('accepts the submission when Turnstile validates the token', function () {
+    $s = app(IntegrationSettings::class);
+    $s->turnstile_enabled = true;
+    $s->turnstile_site_key = 'site-key';
+    $s->turnstile_secret = 'secret';
+    $s->save();
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
+
+    readyBuilder()
+        ->set('contact.name', 'Ana')->set('contact.phone', '+55 11 98765-4321')->set('privacy', true)
+        ->set('turnstileToken', 'good')
+        ->call('submit')->assertHasNoErrors();
+
+    expect(Project::count())->toBe(1);
 });

@@ -113,3 +113,12 @@
         scroll-behavior: auto !important;
     }
 }
+
+/* Ajustes > Marca: "reducir animaciones" fuerza el mismo comportamiento para todos los visitantes. */
+[data-reduce-motion] *,
+[data-reduce-motion] *::before,
+[data-reduce-motion] *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}

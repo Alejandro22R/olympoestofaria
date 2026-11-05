@@ -6,6 +6,8 @@ use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Events\AppointmentChanged;
 use App\Domain\Appointments\Services\AgendaService;
 use App\Domain\Auth\Permission;
+use App\Domain\Notifications\Customer\CustomerEvents;
+use App\Domain\Notifications\Customer\MessageEvent;
 use App\Domain\Notifications\StaffNotifier;
 use App\Filament\Pages\AppointmentCalendar;
 use App\Models\Appointment;
@@ -100,6 +102,7 @@ class ScheduleAppointment
     private function announce(Appointment $appointment, string $change): void
     {
         AppointmentChanged::dispatch($appointment->id, $change);
+        app(CustomerEvents::class)->appointment($appointment, $change === 'created' ? MessageEvent::AppointmentConfirmed : MessageEvent::AppointmentMoved);
 
         $tz = $this->agenda->timezone();
         $this->notifier->notify(Permission::AppointmentsManage, new StaffAlert(

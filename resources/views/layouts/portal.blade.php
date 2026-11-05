@@ -4,9 +4,11 @@
     $pageTitle = $title ?? $portalSettings->text($portalSettings->seo_title);
     $pageDescription = $description ?? $portalSettings->text($portalSettings->seo_description);
     $whatsapp = $general->whatsapp ? 'https://wa.me/'.ltrim($general->whatsapp, '+') : null;
+    $brand = \App\Support\Brand::settings();
+    $brandCss = \App\Support\Brand::portalCss();
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" @if ($brand?->reduce_motion) data-reduce-motion @endif>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -23,7 +25,8 @@
     <meta property="og:description" content="{{ $pageDescription }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:locale" content="{{ app()->getLocale() }}">
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ $brand?->faviconUrl() ?? asset('favicon.svg') }}">
+    @if ($brandCss)<style>{{ $brandCss }}</style>@endif
     @stack('head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -33,7 +36,7 @@
     <header class="fixed inset-x-0 top-0 z-40 border-b border-ink-700/40 bg-ink-950/70 backdrop-blur-md">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
             <a href="{{ route('home') }}" class="no-underline" aria-label="Olympo">
-                <img src="{{ asset('images/brand/logo.svg') }}" alt="Olympo" class="h-8 w-auto md:h-9" width="150" height="40">
+                <img src="{{ $brand?->logoDarkUrl() ?? asset('images/brand/logo.svg') }}" alt="Olympo" class="h-8 w-auto md:h-9" width="150" height="40">
             </a>
             <nav class="flex items-center gap-4 text-sm" aria-label="{{ __('portal.nav.main') }}">
                 <a href="{{ route('portal.catalog') }}" class="hidden text-steel-300 no-underline hover:text-paper sm:inline">{{ __('portal.nav.catalog') }}</a>

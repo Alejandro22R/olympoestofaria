@@ -1,0 +1,88 @@
+<?php
+
+return [
+    'events' => [
+        'project_received' => 'Proyecto recibido',
+        'quote_sent' => 'Cotización enviada',
+        'quote_reminder' => 'Recordatorio de cotización',
+        'quote_approved' => 'Cotización aprobada',
+        'payment_approved' => 'Pago aprobado',
+        'payment_rejected' => 'Pago rechazado',
+        'appointment_confirmed' => 'Cita confirmada',
+        'appointment_moved' => 'Cita reprogramada',
+        'appointment_cancelled' => 'Cita cancelada',
+        'appointment_reminder' => 'Recordatorio de cita',
+        'checkin_report' => 'Acta de recepción',
+        'work_order_stage' => 'Avance del trabajo',
+        'work_order_ready' => 'Vehículo listo',
+        'delivery_report' => 'Acta de entrega',
+        'warranty_review' => 'Revisión de garantía',
+        'review_request' => 'Pedido de reseña',
+    ],
+    'categories' => [
+        'transactional' => 'Obligatorio',
+        'updates' => 'Avances',
+        'marketing' => 'Marketing',
+    ],
+    'channels' => [
+        'mail' => 'Correo',
+        'whatsapp' => 'WhatsApp',
+    ],
+    'statuses' => [
+        'sent' => 'Enviado',
+        'failed' => 'Falló',
+        'skipped' => 'Omitido',
+    ],
+    'unsubscribe' => 'No quiero recibir más estos avisos',
+    'unsubscribe_page' => [
+        'title' => 'Cancelar avisos',
+        'text' => ':name, dejarás de recibir avances del trabajo, recordatorios y pedidos de reseña.',
+        'confirm' => 'Confirmar baja',
+        'done' => 'Listo. Ya no recibirás avisos opcionales.',
+        'note' => 'Los avisos obligatorios (pagos, citas y actas) se siguen enviando.',
+    ],
+    'whatsapp' => [
+        'not_configured' => 'Indica el ID del número y el token de acceso.',
+        'unreachable' => 'No se pudo conectar con la API de WhatsApp.',
+        'error' => 'Meta respondió con error: :message',
+        'ok' => 'Conectado: :number (:name)',
+    ],
+    'templates' => [
+        'label' => 'Plantilla de mensaje',
+        'plural' => 'Plantillas de mensaje',
+        'fields' => [
+            'event' => 'Evento',
+            'channel' => 'Canal',
+            'locale' => 'Idioma',
+            'subject' => 'Asunto',
+            'body' => 'Mensaje',
+            'whatsapp_template' => 'Nombre de la plantilla en Meta',
+            'whatsapp_language' => 'Idioma de la plantilla en Meta',
+            'whatsapp_params' => 'Orden de las variables en la plantilla de Meta',
+            'is_active' => 'Activa',
+            'category' => 'Tipo',
+        ],
+        'help' => [
+            'body' => 'Variables disponibles: :vars',
+            'whatsapp' => 'En WhatsApp el mensaje debe ser una plantilla aprobada por Meta. Este texto es la referencia; el orden de las variables define {{1}}, {{2}}…',
+        ],
+        'errors' => [
+            'unknown_variables' => 'Variables desconocidas: :vars',
+        ],
+        'preview' => 'Vista previa',
+    ],
+    'logs' => [
+        'label' => 'Envío',
+        'plural' => 'Registro de envíos',
+        'fields' => [
+            'created_at' => 'Fecha',
+            'event' => 'Evento',
+            'channel' => 'Canal',
+            'recipient' => 'Destinatario',
+            'status' => 'Estado',
+            'attempt' => 'Intento',
+            'error' => 'Error',
+            'customer' => 'Cliente',
+        ],
+    ],
+];

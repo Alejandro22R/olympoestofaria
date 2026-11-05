@@ -3,6 +3,7 @@
 namespace App\Domain\WorkOrders\Actions;
 
 use App\Domain\Inventory\Actions\ConsumeWorkOrderMaterials;
+use App\Domain\Notifications\Customer\CustomerEvents;
 use App\Domain\WorkOrders\Enums\WorkOrderStatus;
 use App\Domain\WorkOrders\Events\WorkOrderMoved;
 use App\Models\User;
@@ -42,7 +43,9 @@ class MoveWorkOrder
             return $workOrder;
         }
 
-        DB::transaction(function () use ($workOrder, $stage, $user, $note, $photos, $from, $to): void {
+        $update = null;
+        $stageChanged = $workOrder->workflow_stage_id !== $stage->id;
+        DB::transaction(function () use ($workOrder, $stage, $user, $note, $photos, $from, $to, &$update): void {
             if ($from === WorkOrderStatus::Received && $to === WorkOrderStatus::InProduction) {
                 $this->consume->execute($workOrder, $user);
                 $workOrder->started_at ??= now();
@@ -62,7 +65,7 @@ class MoveWorkOrder
             $workOrder->workflow_stage_id = $stage->id;
             $workOrder->save();
 
-            $workOrder->updates()->create([
+            $update = $workOrder->updates()->create([
                 'workflow_stage_id' => $stage->id,
                 'status' => $to,
                 'note' => $note,
@@ -73,6 +76,13 @@ class MoveWorkOrder
         });
 
         WorkOrderMoved::dispatch($workOrder->id, $stage->id, $to->value);
+
+        $events = app(CustomerEvents::class);
+        if ($to === WorkOrderStatus::Ready && $from !== WorkOrderStatus::Ready) {
+            $events->ready($workOrder);
+        } elseif ($stage->notifies_customer && $update !== null && ($stageChanged || $photos !== [])) {
+            $events->stageChanged($workOrder, $stage, $update->id);
+        }
 
         return $workOrder;
     }
