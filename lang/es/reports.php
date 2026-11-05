@@ -14,6 +14,12 @@ return [
         'footer' => '¡Gracias por confiar en Olympo!',
         'whatsapp' => '¡Hola, :name! Tu vehículo :plate fue entregado. Esta es el acta de entrega con los servicios y la garantía: :url',
     ],
+    'quote' => [
+        'subject' => 'Cotización para tu vehículo :plate',
+        'body' => 'Adjuntamos la cotización de tu vehículo :plate. También puedes aprobarla y pagar el anticipo desde el enlace que te enviamos por WhatsApp.',
+        'footer' => 'Cualquier duda, responde este correo.',
+        'whatsapp' => '¡Hola, :name! Tu cotización de Olympo está lista. Mira los detalles, apruébala y paga el anticipo aquí: :url',
+    ],
     'errors' => [
         'no_pdf' => 'El PDF todavía no se generó.',
     ],

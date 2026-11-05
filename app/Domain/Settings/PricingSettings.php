@@ -18,6 +18,18 @@ class PricingSettings extends Settings
     /** Mostrar el estimado al cliente en el constructor. */
     public bool $show_estimate;
 
+    /** Días de vigencia de la cotización final. */
+    public int $quote_validity_days;
+
+    /** Descuento máximo permitido sobre el subtotal, en %. */
+    public int $max_discount_percent;
+
+    /** @var list<string> Roles que pueden fijar el precio final de la cotización. */
+    public array $final_price_roles;
+
+    /** Exigir que el lead esté "contactado" antes de cotizar. */
+    public bool $require_contact_before_quote;
+
     public static function group(): string
     {
         return 'pricing';

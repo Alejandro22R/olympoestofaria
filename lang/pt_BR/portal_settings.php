@@ -7,6 +7,11 @@ return [
         'estimate_help' => 'O cliente vê uma faixa (mínimo–máximo) calculada com os preços base dos serviços e dos materiais. A oficina confirma o valor final.',
         'show_estimate' => 'Mostrar a estimativa ao cliente',
         'margin' => 'Margem da faixa (±)',
+        'quotes' => 'Orçamento final',
+        'validity' => 'Validade do orçamento',
+        'max_discount' => 'Desconto máximo',
+        'price_roles' => 'Perfis que definem o preço final',
+        'contact_first' => 'Exigir contato antes de orçar',
         'rounding' => 'Arredondar para múltiplos de',
     ],
     'portal' => [

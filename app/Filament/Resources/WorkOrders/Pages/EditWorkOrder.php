@@ -2,10 +2,17 @@
 
 namespace App\Filament\Resources\WorkOrders\Pages;
 
+use App\Domain\Customers\Access\TrackingLink;
 use App\Domain\Inspections\Actions\InspectionReportLink;
 use App\Domain\Inspections\Enums\ReportChannel;
 use App\Domain\Inventory\Actions\ConsumeWorkOrderMaterials;
+use App\Domain\Payments\Actions\RecordManualPayment;
+use App\Domain\Payments\Actions\RequestPixPayment;
+use App\Domain\Payments\BillingSummary;
+use App\Domain\Payments\Enums\PaymentMethod;
+use App\Domain\Payments\Enums\PaymentType;
 use App\Domain\Reports\SendReport;
+use App\Domain\Settings\PaymentSettings;
 use App\Domain\Settings\ProductionSettings;
 use App\Domain\WorkOrders\Actions\CancelWorkOrder;
 use App\Domain\WorkOrders\Actions\MoveWorkOrder;
@@ -13,6 +20,8 @@ use App\Domain\WorkOrders\Enums\WorkOrderStatus;
 use App\Filament\Concerns\MapsDomainValidation;
 use App\Filament\Resources\Inspections\InspectionResource;
 use App\Filament\Resources\WorkOrders\WorkOrderResource;
+use App\Filament\Support\Money;
+use App\Filament\Support\MoneyInput;
 use App\Models\WorkflowStage;
 use App\Models\WorkOrder;
 use Filament\Actions\Action;
@@ -21,6 +30,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -118,7 +128,49 @@ class EditWorkOrder extends EditRecord
                 ->visible(fn () => $this->order()->status === WorkOrderStatus::Ready
                     && (bool) auth()->user()?->can('deliver', $this->order()))
                 ->url(fn () => WorkOrderResource::getUrl('deliver', ['record' => $this->order()])),
+            Action::make('balance')
+                ->label(__('payments.actions.charge_balance'))
+                ->icon(Heroicon::OutlinedBanknotes)
+                ->color('gray')
+                ->visible(fn () => (bool) auth()->user()?->can('deliver', $this->order())
+                    && BillingSummary::forWorkOrder($this->order())->outstandingCents() > 0
+                    && $this->order()->status !== WorkOrderStatus::Cancelled)
+                ->modalDescription(fn () => __('payments.messages.outstanding', ['amount' => Money::format(BillingSummary::forWorkOrder($this->order())->outstandingCents())]))
+                ->schema([
+                    Radio::make('how')->label(__('payments.fields.method'))
+                        ->options(fn () => array_filter([
+                            'pix_online' => app(PaymentSettings::class)->onlinePixAvailable() ? __('payments.actions.generate_pix') : null,
+                            'manual' => __('payments.actions.record_manual'),
+                        ]))->default('manual')->required()->live(),
+                    Select::make('method')->label(__('payments.fields.method'))
+                        ->options(fn () => collect(app(PaymentSettings::class)->manual_methods)->mapWithKeys(fn (string $m) => [$m => PaymentMethod::from($m)->getLabel()])->all())
+                        ->visible(fn ($get) => $get('how') === 'manual')->required(fn ($get) => $get('how') === 'manual'),
+                    MoneyInput::make('amount_cents')->label(__('payments.fields.amount'))
+                        ->default(fn () => number_format(BillingSummary::forWorkOrder($this->order())->outstandingCents() / 100, 2, '.', ''))
+                        ->visible(fn ($get) => $get('how') === 'manual'),
+                    TextInput::make('email')->label(__('customers.fields.email'))->email()
+                        ->default(fn () => $this->order()->vehicle->customer->email)
+                        ->visible(fn ($get) => $get('how') === 'pix_online')->required(fn ($get) => $get('how') === 'pix_online'),
+                ])
+                ->action(function (array $data): void {
+                    if ($data['how'] === 'pix_online') {
+                        $payment = $this->withFormErrors(fn () => app(RequestPixPayment::class)->balance($this->order(), $data['email']), 'mountedActions.0.data');
+                        Notification::make()->success()->title(__('payments.messages.pix_created', ['amount' => Money::format($payment->amount_cents)]))
+                            ->body(__('payments.messages.pix_share'))->persistent()->send();
+
+                        return;
+                    }
+                    $this->withFormErrors(fn () => app(RecordManualPayment::class)->execute(
+                        $this->order(), PaymentType::Balance, PaymentMethod::from($data['method']), (int) $data['amount_cents'], auth()->user(),
+                    ), 'mountedActions.0.data');
+                    Notification::make()->success()->title(__('payments.messages.recorded'))->send();
+                }),
             ActionGroup::make([
+                Action::make('tracking')
+                    ->label(__('tracking.send_link'))
+                    ->icon(Heroicon::OutlinedLink)
+                    ->visible(fn () => $this->order()->status !== WorkOrderStatus::Cancelled)
+                    ->url(fn () => app(TrackingLink::class)->whatsappUrl($this->order()), shouldOpenInNewTab: true),
                 Action::make('inspection')
                     ->label(__('inspections.model'))
                     ->icon(Heroicon::OutlinedClipboardDocumentCheck)

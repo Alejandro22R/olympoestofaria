@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\Payments\Gateways\MercadoPagoGateway;
+use App\Domain\Payments\Gateways\PaymentGateway;
 use App\Domain\Settings\GeneralSettings;
 use App\Domain\Settings\Listeners\AuditSettingsChanges;
 use App\Http\Middleware\SetLocale;
@@ -17,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Pasarela de pago desacoplada (PLAN.md §3): hoy Mercado Pago.
+        $this->app->bind(PaymentGateway::class, MercadoPagoGateway::class);
     }
 
     public function boot(): void

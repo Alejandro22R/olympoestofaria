@@ -11,6 +11,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
     <link rel="canonical" href="{{ url()->current() }}">
@@ -65,7 +66,7 @@
     </footer>
 
     {{-- CTA fijo en móvil --}}
-    @unless (request()->routeIs('portal.builder'))
+    @unless (request()->routeIs('portal.builder', 'portal.quote', 'portal.tracking'))
         <div class="fixed inset-x-0 bottom-0 z-40 flex gap-2 border-t border-ink-700/60 bg-ink-950/90 p-3 backdrop-blur-md md:hidden" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
             <a href="{{ route('portal.builder') }}" class="btn-primary flex-1">{{ __('portal.home.cta_project') }}</a>
             @if ($whatsapp)<a href="{{ $whatsapp }}" class="btn-secondary" rel="noopener" target="_blank" aria-label="WhatsApp">WhatsApp</a>@endif

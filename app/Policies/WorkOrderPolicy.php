@@ -26,6 +26,14 @@ class WorkOrderPolicy extends PermissionPolicy
         return $user->is_active && $user->can(Permission::WorkOrdersProgress->value) && $workOrder->status->isOpen();
     }
 
+    /**
+     * Seguimiento en el portal: el cliente dueño o el personal con acceso.
+     */
+    public function track(User $user, WorkOrder $workOrder): bool
+    {
+        return $user->customer?->id === $workOrder->vehicle->customer_id || $this->canView($user);
+    }
+
     public function deliver(User $user, WorkOrder $workOrder): bool
     {
         return $user->is_active && $user->can(Permission::DeliveriesManage->value);

@@ -4,9 +4,12 @@ namespace App\Filament\Resources\Projects\Pages;
 
 use App\Domain\Projects\Actions\ChangeProjectStatus;
 use App\Domain\Projects\Enums\ProjectStatus;
+use App\Domain\Quotes\Actions\CreateQuote;
 use App\Filament\Concerns\MapsDomainValidation;
 use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Quotes\QuoteResource;
 use App\Models\Project;
+use App\Models\Quote;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
@@ -30,6 +33,15 @@ class ViewProject extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('quote')
+                ->label(__('quotes.actions.create_from_project'))
+                ->icon(Heroicon::OutlinedDocumentCurrencyDollar)
+                ->visible(fn () => (bool) auth()->user()?->can('create', Quote::class)
+                    && ! in_array($this->project()->status, [ProjectStatus::Approved, ProjectStatus::Lost], true))
+                ->action(function (): void {
+                    $quote = $this->withFormErrors(fn () => app(CreateQuote::class)->fromProject($this->project(), auth()->user()));
+                    $this->redirect(QuoteResource::getUrl('edit', ['record' => $quote]));
+                }),
             Action::make('whatsapp')
                 ->label(__('projects.actions.whatsapp'))
                 ->icon(Heroicon::OutlinedChatBubbleLeftRight)

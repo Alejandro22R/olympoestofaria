@@ -7,6 +7,11 @@ return [
         'estimate_help' => 'El cliente ve un rango (mínimo–máximo) calculado con los precios base de los servicios y los materiales. El taller confirma el valor final.',
         'show_estimate' => 'Mostrar la estimación al cliente',
         'margin' => 'Margen del rango (±)',
+        'quotes' => 'Cotización final',
+        'validity' => 'Vigencia de la cotización',
+        'max_discount' => 'Descuento máximo',
+        'price_roles' => 'Perfiles que fijan el precio final',
+        'contact_first' => 'Exigir contacto antes de cotizar',
         'rounding' => 'Redondear a múltiplos de',
     ],
     'portal' => [

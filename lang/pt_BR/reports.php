@@ -14,6 +14,12 @@ return [
         'footer' => 'Obrigado por confiar na Olympo!',
         'whatsapp' => 'Olá, :name! O seu veículo :plate foi entregue. Este é o termo de entrega com os serviços e a garantia: :url',
     ],
+    'quote' => [
+        'subject' => 'Orçamento para o seu veículo :plate',
+        'body' => 'Segue em anexo o orçamento do seu veículo :plate. Você também pode aprová-lo e pagar o sinal pelo link que enviamos por WhatsApp.',
+        'footer' => 'Qualquer dúvida, responda este e-mail.',
+        'whatsapp' => 'Olá, :name! Seu orçamento da Olympo está pronto. Veja os detalhes, aprove e pague o sinal aqui: :url',
+    ],
     'errors' => [
         'no_pdf' => 'O PDF ainda não foi gerado.',
     ],

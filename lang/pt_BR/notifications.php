@@ -3,6 +3,10 @@
 return [
     'lead_created' => 'Nova solicitação: :vehicle',
     'lead_created_body' => 'Projeto :number enviado pelo site.',
+    'quote_approved' => 'Orçamento aprovado: :number',
+    'quote_rejected' => 'Orçamento recusado: :number',
+    'payment_approved' => 'Pagamento recebido: :amount',
+    'payment_rejected' => 'Pagamento recusado: :amount',
     'open' => 'Abrir',
     'appointment_created' => 'Novo agendamento: :plate',
     'appointment_moved' => 'Agendamento alterado: :plate',

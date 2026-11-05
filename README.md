@@ -70,6 +70,34 @@ composer dev
 
 Procesos aparte: `php artisan reverb:start` (WebSockets) y `php artisan horizon` (colas).
 
+## Despliegue
+
+Después de cada despliegue con migraciones:
+
+```bash
+php artisan migrate --force
+```
+
+```bash
+php artisan settings:clear-cache
+```
+
+Los ajustes se leen con caché; si se agregan campos nuevos de ajustes, la caché vieja debe limpiarse.
+
+Procesos permanentes (Supervisor): `php artisan horizon` (colas: notificaciones, correos, conversión de videos), `php artisan reverb:start` (WebSockets) y el scheduler (`* * * * * php artisan schedule:run`), que ejecuta las alertas, la conciliación de pagos y el vencimiento de cotizaciones.
+
+## Conectar Mercado Pago (Pix)
+
+Mercado Pago viene **desactivado**. Mientras esté así, el taller registra los pagos a mano (efectivo, Pix directo, transferencia) desde la cotización o la orden.
+
+1. En el panel de desarrolladores de Mercado Pago, crea una aplicación ("Suas integrações") y copia las credenciales **de prueba**: Public Key y Access Token.
+2. En **Ajustes > Pagos**: activa "pagos online por Mercado Pago", deja el modo en **Teste**, marca Pix, pega Public Key y Access Token y guarda. Usa **Testar conexão** para verificar.
+3. Copia la **URL de notificaciones** que muestra esa página (`https://tu-dominio/webhooks/mercadopago`). En Mercado Pago > Webhooks, pégala con el evento **Pagamentos** y copia la **assinatura secreta** al campo "Assinatura secreta do webhook". En producción la URL debe ser HTTPS pública.
+4. Prueba un pago con un usuario de prueba de Mercado Pago: aprueba una cotización desde el portal y paga el Pix; el pago se confirma solo por el webhook (y, si un aviso se pierde, la conciliación cada 10 minutos lo recupera).
+5. Para cobrar de verdad: reemplaza las credenciales por las de **producción**, cambia el modo a **Produção** (pide confirmación explícita) y actualiza el webhook de producción.
+
+Las credenciales se guardan cifradas en la base de datos, nunca se muestran de vuelta y no quedan en la auditoría. Dejar un campo de secreto vacío al guardar conserva el valor actual.
+
 ## Usuarios de demostración
 
 Creados por `UserSeeder` solo fuera de producción. Contraseña: `password`.

@@ -3,6 +3,10 @@
 return [
     'lead_created' => 'Nueva solicitud: :vehicle',
     'lead_created_body' => 'Proyecto :number enviado desde el sitio.',
+    'quote_approved' => 'Cotización aprobada: :number',
+    'quote_rejected' => 'Cotización rechazada: :number',
+    'payment_approved' => 'Pago recibido: :amount',
+    'payment_rejected' => 'Pago rechazado: :amount',
     'open' => 'Abrir',
     'appointment_created' => 'Nueva cita: :plate',
     'appointment_moved' => 'Cita modificada: :plate',

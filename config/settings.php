@@ -3,6 +3,7 @@
 use App\Domain\Settings\AgendaSettings;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\GeneralSettings;
+use App\Domain\Settings\PaymentSettings;
 use App\Domain\Settings\PortalSettings;
 use App\Domain\Settings\PricingSettings;
 use App\Domain\Settings\ProductionSettings;
@@ -28,6 +29,7 @@ return [
         WarrantySettings::class,
         PricingSettings::class,
         PortalSettings::class,
+        PaymentSettings::class,
     ],
 
     /*

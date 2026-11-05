@@ -131,6 +131,22 @@ class WorkOrder extends Model
         return $this->hasOne(Warranty::class);
     }
 
+    /**
+     * @return BelongsTo<Quote, $this>
+     */
+    public function quote(): BelongsTo
+    {
+        return $this->belongsTo(Quote::class);
+    }
+
+    /**
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function totalCents(): int
     {
         return (int) $this->items->sum('price_cents');

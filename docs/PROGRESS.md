@@ -80,3 +80,25 @@
 **Notas de diseño:** `steel-500` (#737373) sobre negro da 4,42:1 y no llega a AA para texto pequeño; en el portal se usa `steel-300` para texto y `steel-500` solo como acento.
 
 **Pendiente del taller:** video real de costura (horizontal 1920×1080 y vertical 720×1280), fotos originales de trabajos y antes/después, y autorización escrita de uso de imágenes.
+
+## Fase 5: Cotización, pagos y seguimiento ✅
+
+- **Cotización final** (`/admin/quotes`): se crea desde la solicitud (ítems y precios iniciales del estimado) o desde cero. Totales siempre recalculados en el servidor (`QuoteTotals`, centavos enteros), descuento limitado por Ajustes, precio final editable solo por los roles configurados, vigencia obligatoria. Una cotización enviada no se edita: se crea una **versión nueva** y la anterior queda como "reemplazada". PDF en el idioma del cliente.
+- **Envío** por WhatsApp (enlace firmado a la página de aprobación) o correo (PDF adjunto), con registro de envío. La solicitud pasa a "cotizada".
+- **Portal del cliente** (`/orcamento/{id}`): el enlace firmado abre su sesión sin contraseña (cuenta ligera con rol `customer`, nunca reemplaza una sesión del personal). Revisa, acepta las condiciones y aprueba, o pide cambios. La cotización vencida no se puede aprobar.
+- **Pagos** (`PaymentGateway` desacoplado):
+  - **Mercado Pago activable/desactivable** en Ajustes > Pagos, hoy **solo Pix** (estructura lista para tarjeta). Modo prueba/producción (producción con confirmación explícita), Public Key, Access Token y secreto del webhook **cifrados y de solo escritura**, botón "Testar conexão" y URL del webhook para copiar.
+  - Pix del **anticipo** al aprobar (QR, "copia e cola" y cuenta regresiva) y del **saldo** al estar lista la orden (o antes, según Ajustes). Clave de idempotencia y `external_reference` = uuid del pago; un Pix pendiente vigente se reutiliza.
+  - **Webhook** `/webhooks/mercadopago`: firma `x-signature` verificada (HMAC-SHA256, tolerancia de tiempo contra repetición), idempotente (`webhook_events`), estado consultado a la API (nunca se confía en el cuerpo), control del monto y estados finales que no se revierten.
+  - **Conciliación** cada 10 min (`olympo:payments:reconcile`) y vencimiento de Pix sin pagar.
+  - **Pagos manuales** (efectivo, Pix directo, transferencia, tarjeta según Ajustes) desde la cotización o la orden; nunca superan el saldo.
+  - Al pagarse el anticipo: cotización con anticipo pagado y **cita confirmada** automáticamente (si así está configurado). Aviso en vivo al panel y a la campana.
+- **Seguimiento del cliente** (`/acompanhar/{orden}`, enlace firmado enviado por WhatsApp desde la orden): etapas visibles, avances con fotos (servidas solo al dueño), total/pagado/saldo y pago del saldo con Pix. Se actualiza **en vivo** por el canal privado `customers.{id}` (eventos `work-order.moved` y `payment.updated`, solo identificadores) con sondeo de respaldo.
+- Desde la cotización aprobada: **agendar la recepción** (crea el vehículo si el lead aún no lo tenía) y **abrir la orden de trabajo** con los ítems; el check-in de una cita con cotización aprobada también la vincula.
+- **Ajustes nuevos**: Pagos; y en Cotizaciones y precios: vigencia, descuento máximo, roles del precio final y exigir contacto previo.
+
+**Aceptación:** un pago de prueba confirma la cita y el cliente ve el avance de su orden. Cubierto por pruebas (361 en verde) con Mercado Pago simulado (`Http::fake`) y webhooks firmados, Pint y Larastan sin errores.
+
+**Para conectar en real:** ver "Conectar Mercado Pago (Pix)" en el README. Desde este entorno de desarrollo no hay salida de red a `api.mercadopago.com`, así que la prueba con credenciales reales debe hacerse en el servidor.
+
+**Despliegue:** ejecutar `php artisan settings:clear-cache` después de migrar.
