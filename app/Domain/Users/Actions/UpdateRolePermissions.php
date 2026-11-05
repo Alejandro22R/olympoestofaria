@@ -34,8 +34,8 @@ class UpdateRolePermissions
         $valid = array_map(fn (Permission $p) => $p->value, Permission::cases());
         $permissions = array_values(array_unique(array_intersect($permissions, $valid)));
 
-        // Sin acceso al panel el resto no sirve; los ajustes y usuarios son exclusivos del dueño.
-        $permissions = array_values(array_diff($permissions, [Permission::SettingsManage->value, Permission::UsersManage->value]));
+        // Sin acceso al panel el resto no sirve; ajustes, usuarios y privacidad son exclusivos del dueño.
+        $permissions = array_values(array_diff($permissions, [Permission::SettingsManage->value, Permission::UsersManage->value, Permission::PrivacyManage->value]));
         if ($permissions !== [] && ! in_array(Permission::AccessPanel->value, $permissions, true)) {
             $permissions[] = Permission::AccessPanel->value;
         }

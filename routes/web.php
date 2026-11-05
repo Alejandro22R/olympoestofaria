@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ShowCustomerDocument;
 use App\Http\Controllers\Admin\ShowQuoteReport;
 use App\Http\Controllers\Portal\CatalogController;
 use App\Http\Controllers\Portal\HomeController;
+use App\Http\Controllers\Portal\LegalController;
 use App\Http\Controllers\Portal\ProjectSentController;
 use App\Http\Controllers\Portal\ShowProgressPhoto;
 use App\Http\Controllers\Portal\UnsubscribeController;
@@ -17,9 +18,11 @@ use App\Livewire\Portal\TrackingPage;
 use Illuminate\Support\Facades\Route;
 
 // Portal público (PLAN.md §2.2): catálogo y constructor abiertos; registro solo al enviar.
-Route::middleware(SetLocale::class)->group(function () {
+Route::middleware([SetLocale::class, 'throttle:portal'])->group(function () {
     Route::get('/', HomeController::class)->name('home');
     Route::get('catalogo', CatalogController::class)->name('portal.catalog');
+    Route::get('privacidade', [LegalController::class, 'privacy'])->name('portal.privacy');
+    Route::get('termos', [LegalController::class, 'terms'])->name('portal.terms');
     Route::get('projeto', ProjectBuilder::class)->name('portal.builder');
     Route::get('projeto/enviado/{project}', ProjectSentController::class)->middleware('signed')->name('portal.project.sent');
 

@@ -46,7 +46,7 @@
                         </div>
 
                         @if ($day['holiday'] && ! $closed)
-                            <span class="text-xs text-gray-500">{{ $day['holiday'] }}</span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">{{ $day['holiday'] }}</span>
                         @endif
 
                         <ul class="flex flex-col gap-1">

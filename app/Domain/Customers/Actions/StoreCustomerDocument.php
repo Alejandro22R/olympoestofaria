@@ -2,6 +2,8 @@
 
 namespace App\Domain\Customers\Actions;
 
+use App\Domain\Privacy\ConsentRecorder;
+use App\Domain\Settings\PrivacySettings;
 use App\Models\Customer;
 use App\Models\CustomerDocument;
 use App\Models\User;
@@ -25,6 +27,10 @@ class StoreCustomerDocument
 
     public function execute(Customer $customer, UploadedFile $file, ?User $uploader = null): CustomerDocument
     {
+        if (! app(PrivacySettings::class)->store_document_photo) {
+            throw ValidationException::withMessages(['file' => __('customers.errors.document_photo_disabled')]);
+        }
+
         if (! $customer->hasLgpdConsent()) {
             throw ValidationException::withMessages(['file' => __('customers.errors.consent_required')]);
         }
@@ -55,6 +61,8 @@ class StoreCustomerDocument
                 'uploaded_by' => $uploader?->id,
                 'consent_at' => $customer->lgpd_consent_at,
             ]);
+
+            app(ConsentRecorder::class)->record($customer, ConsentRecorder::DOCUMENT, true, 'panel');
 
             if ($previous !== null && $previous->path !== $path) {
                 DB::afterCommit(fn () => Storage::disk($previous->disk)->delete($previous->path));

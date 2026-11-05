@@ -60,10 +60,12 @@
     <footer class="border-t border-ink-700/60 pb-28 pt-10 text-sm text-steel-300 md:pb-10">
         <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 md:flex-row md:items-center md:justify-between">
             <p>© {{ date('Y') }} {{ $general->business_name }} · {{ $general->city }}</p>
-            <div class="flex gap-4">
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
                 @if ($portalSettings->instagram_url)<a href="{{ $portalSettings->instagram_url }}" rel="noopener" target="_blank">Instagram</a>@endif
                 @if ($whatsapp)<a href="{{ $whatsapp }}" rel="noopener" target="_blank">WhatsApp</a>@endif
                 @if ($general->maps_url)<a href="{{ $general->maps_url }}" rel="noopener" target="_blank">{{ __('portal.nav.map') }}</a>@endif
+                <a href="{{ route('portal.privacy') }}">{{ __('privacy.legal.privacy_title') }}</a>
+                <a href="{{ route('portal.terms') }}">{{ __('privacy.legal.terms_title') }}</a>
             </div>
         </div>
     </footer>

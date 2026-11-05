@@ -156,3 +156,39 @@
 - Sentry: el estado se muestra, pero se configura en la Fase 7.
 - Mercado Livre: queda para cuando se defina el uso.
 - Push web: opcional en el plan; hoy no está.
+
+## Fase 7: Endurecimiento y lanzamiento ✅
+
+- **Seguridad**:
+  - Cabeceras en todas las respuestas: CSP con lista cerrada de orígenes, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` y HSTS por https.
+  - Proxies de confianza y https forzado en producción.
+  - Límites de tasa: portal 120/min por IP, webhooks 240/min, más los que ya había en login, constructor y enlaces firmados.
+  - Avatares generados en el servidor: Filament mandaba el nombre a ui-avatars.com.
+  - Horizon solo para el dueño. Prueba que recorre todos los recursos del panel y confirma que un cliente no entra a ninguno.
+  - `composer audit` y `npm audit` sin vulnerabilidades. Detalle en `docs/SECURITY.md`.
+- **Sentry** (`sentry/sentry-laravel` 4.29) integrado en el manejador de excepciones. Se activa con `SENTRY_LARAVEL_DSN` y nunca envía datos personales.
+- **Privacidad y LGPD** (Ajustes > Privacidade e LGPD):
+  - Ajustes: guardar o no la foto del documento, anonimizar clientes inactivos tras N meses, borrar solicitudes perdidas tras N meses, contacto del encargado de datos y textos legales editables en Markdown pt/es.
+  - Páginas públicas `/privacidade` y `/termos`, enlazadas en el pie y en el constructor. Los textos base se deben revisar con un abogado.
+  - **Registro de consentimientos**: quién, qué, cuándo y desde dónde (sitio, check-in, panel, enlace de baja), con hash de IP. Visible en la ficha del cliente y en una lista propia.
+  - **Exportar** los datos del cliente en JSON (portabilidad) y **anonimizar** (confirmación escrita, solo el dueño). La anonimización borra contactos, documento, fotos y actas, cambia las placas por un código, limpia la auditoría y la cuenta del portal, y conserva montos y servicios por obligación fiscal. Se rechaza si hay algo abierto.
+  - Retención automática diaria (`olympo:privacy:retention`).
+- **Respaldos y salud** (Ajustes > Backups e saúde):
+  - Copias con `spatie/laravel-backup` 10: base de datos y, opcionalmente, archivos privados y públicos.
+  - Configurable: frecuencia, hora, retención, destinos (servidor y nube S3/R2), ZIP con contraseña.
+  - Un fallo avisa al dueño. Botón "Fazer cópia agora".
+  - **Prueba de restauración**: mensual y con botón. Abre la última copia, verifica el volcado y las tablas clave y, si hay base de prueba, la restaura y cuenta registros.
+  - **Salud**: base de datos, colas, planificador (latido cada minuto), Reverb, disco, última copia y última prueba.
+  - **Modo mantenimiento** con confirmación: cierra solo el portal; el panel, los webhooks de pago y `/up` siguen. Página 503 con la marca.
+  - **Exportar e importar la configuración** en JSON sin secretos, para pasar de pruebas a producción.
+- **Auditoría** (Ajustes > Auditoria): visor del registro con filtros por área, persona y fechas, detalle del valor anterior y nuevo, exportación CSV y retención configurable (mínimo 180 días, limpieza diaria).
+- **Accesibilidad**: auditoría con axe-core (WCAG 2.1 AA) en móvil y escritorio, sobre 20 páginas del portal y del panel. Se corrigieron marcadores de imagen sin texto, contrastes de textos secundarios y el botón rojo de Filament (4,33:1 → AA). Resultado: **0 violaciones**. Script: `npm run test:a11y`.
+- **Carga**: script sin dependencias (`npm run test:load`) y escenario k6. En este contenedor (4 núcleos, servidor de desarrollo de PHP, no PHP-FPM) cada página tarda 50–85 ms sola; con 8 usuarios concurrentes da ≈21 req/s, p95 ≈420 ms y 0 errores. Repetir contra el servidor real.
+- **Lanzamiento**:
+  - Guía completa en `docs/DEPLOY.md`.
+  - Plantillas de servidor: Nginx con HTTPS, HTTP/2, gzip y proxy de Reverb; Supervisor para Horizon y Reverb; cron; script de despliegue sin caída; `.env.production.example`.
+  - `olympo:create-owner` para el primer acceso.
+
+**Aceptación de la fase:** cubierta por pruebas (478 en verde), Pint y Larastan sin errores. El despliegue real queda pendiente: requiere el servidor, el dominio y las credenciales del taller. La guía y las plantillas están listas.
+
+**Pospuesto a pedido del taller:** WhatsApp Cloud API y correo SMTP se conectan al final (ver README). Mientras tanto, los avisos quedan en el registro de envíos y los fallos técnicos llegan a la campana del dueño.

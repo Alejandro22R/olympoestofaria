@@ -5,5 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 // Webhooks de pago: firma verificada e idempotentes (sin CSRF ni sesión).
 Route::post('webhooks/mercadopago', MercadoPagoWebhookController::class)
-    ->middleware('throttle:120,1')
+    ->middleware('throttle:webhooks')
     ->name('webhooks.mercadopago');

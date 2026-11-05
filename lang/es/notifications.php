@@ -36,4 +36,6 @@ return [
     'escalated' => 'Alerta sin atender: :title',
     'escalated_body' => 'Nadie abrió esta alerta en :hours h.',
     'review_received' => 'Nueva reseña (:rating★): :number',
+    'backup_failed' => 'Falló la copia de seguridad',
+    'backup_failed_body' => 'La copia automática no terminó. Revisa Ajustes > Respaldos y salud.',
 ];

@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureTwoFactorWhenRequired;
 use App\Http\Middleware\SetLocale;
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ], isRequired: true)
             ->multiFactorAuthenticationRequiredMiddlewareName(EnsureTwoFactorWhenRequired::class)
             ->brandName('Olympo')
+            ->defaultAvatarProvider(InitialsAvatarProvider::class)
             // Ajustes > Marca: logo claro para el tema claro y logo oscuro (por defecto) para el oscuro.
             ->brandLogo(fn () => Brand::settings()?->logoLightUrl() ?? Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))
             ->darkModeBrandLogo(fn () => Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))

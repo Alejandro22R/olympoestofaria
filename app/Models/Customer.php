@@ -14,10 +14,17 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+/**
+ * @property Carbon|null $lgpd_consent_at
+ * @property Carbon|null $contact_opt_in_at
+ * @property Carbon|null $unsubscribed_at
+ * @property Carbon|null $anonymized_at
+ */
 #[Fillable(['branch_id', 'user_id', 'name', 'email', 'phone', 'document_type', 'document_number', 'lgpd_consent_at', 'contact_opt_in_at', 'notification_preferences', 'unsubscribed_at', 'referral_code', 'referred_by_customer_id', 'locale', 'notes'])]
 #[Hidden(['document_number', 'document_hash'])]
 class Customer extends Model
@@ -34,6 +41,7 @@ class Customer extends Model
             'contact_opt_in_at' => 'datetime',
             'notification_preferences' => 'array',
             'unsubscribed_at' => 'datetime',
+            'anonymized_at' => 'datetime',
         ];
     }
 
@@ -119,6 +127,35 @@ class Customer extends Model
     public function appointments(): HasManyThrough
     {
         return $this->hasManyThrough(Appointment::class, Vehicle::class);
+    }
+
+    /**
+     * @return HasMany<Quote, $this>
+     */
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    /**
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * @return HasMany<ConsentEvent, $this>
+     */
+    public function consents(): HasMany
+    {
+        return $this->hasMany(ConsentEvent::class)->latest('created_at');
+    }
+
+    public function isAnonymized(): bool
+    {
+        return $this->anonymized_at !== null;
     }
 
     /**

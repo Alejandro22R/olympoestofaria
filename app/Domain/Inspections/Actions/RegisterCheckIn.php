@@ -6,6 +6,7 @@ use App\Domain\Appointments\Actions\ChangeAppointmentStatus;
 use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Inspections\Enums\FuelLevel;
 use App\Domain\Inspections\Support\VehicleSilhouettes;
+use App\Domain\Privacy\ConsentRecorder;
 use App\Domain\Reports\SendReport;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\NotificationSettings;
@@ -62,6 +63,8 @@ class RegisterCheckIn
                 'lgpd_consent_at' => now(),
                 'inspected_by' => $inspector?->id,
             ]);
+
+            app(ConsentRecorder::class)->record($appointment->vehicle->customer, ConsentRecorder::PRIVACY, true, 'checkin');
 
             foreach ($marks as $mark) {
                 $zone = (string) $mark['zone'];

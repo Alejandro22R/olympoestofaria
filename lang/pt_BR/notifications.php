@@ -36,4 +36,6 @@ return [
     'escalated' => 'Alerta sem atenção: :title',
     'escalated_body' => 'Ninguém abriu este alerta em :hours h.',
     'review_received' => 'Nova avaliação (:rating★): :number',
+    'backup_failed' => 'Falha na cópia de segurança',
+    'backup_failed_body' => 'A cópia automática não foi concluída. Veja Ajustes > Backups e saúde.',
 ];

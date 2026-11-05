@@ -15,5 +15,6 @@
 @elseif ($media)
     <img src="{{ $media->getUrl() }}" alt="{{ $label }}" loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async" class="{{ $attributes->get('class', 'h-full w-full object-cover') }}">
 @else
-    <div role="img" aria-label="{{ $label }}" class="{{ $attributes->get('class', 'h-full w-full') }} bg-[radial-gradient(circle_at_30%_20%,var(--color-ink-700),var(--color-ink-950))]"></div>
+    {{-- Sin texto alternativo el marcador es decorativo y se oculta a lectores de pantalla. --}}
+    <div @if ($label !== '') role="img" aria-label="{{ $label }}" @else aria-hidden="true" @endif class="{{ $attributes->get('class', 'h-full w-full') }} bg-[radial-gradient(circle_at_30%_20%,var(--color-ink-700),var(--color-ink-950))]"></div>
 @endif

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Customers\Actions;
 
+use App\Domain\Privacy\ConsentRecorder;
 use App\Models\Customer;
 
 /**
@@ -15,6 +16,7 @@ class UpdateContactPreferences
         if ($customer->unsubscribed_at === null) {
             $customer->forceFill(['unsubscribed_at' => now()])->save();
             activity()->performedOn($customer)->event('unsubscribed')->log('unsubscribed');
+            app(ConsentRecorder::class)->record($customer, ConsentRecorder::CONTACT, false, 'email_link');
         }
     }
 

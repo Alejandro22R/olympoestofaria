@@ -57,6 +57,29 @@ return [
             'report' => false,
         ],
 
+        // Copias de seguridad (Ajustes > Respaldos): en el servidor…
+        'backups' => [
+            'driver' => 'local',
+            'root' => storage_path('app/backups'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
+        // …y fuera del servidor (bucket S3/R2 privado distinto del de la app).
+        'backups_remote' => [
+            'driver' => 's3',
+            'key' => env('BACKUP_S3_KEY', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('BACKUP_S3_SECRET', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => env('BACKUP_S3_REGION', env('AWS_DEFAULT_REGION', 'auto')),
+            'bucket' => env('BACKUP_S3_BUCKET'),
+            'endpoint' => env('BACKUP_S3_ENDPOINT', env('AWS_ENDPOINT')),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

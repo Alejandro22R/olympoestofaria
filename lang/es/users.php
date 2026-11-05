@@ -70,6 +70,7 @@ return [
         'inventory_view' => 'Ver inventario',
         'inventory_manage' => 'Gestionar inventario',
         'reviews_manage' => 'Moderar reseñas',
+        'privacy_manage' => 'Exportar y anonimizar clientes (LGPD)',
         'reports_view' => 'Ver reportes y panel del dueño',
     ],
 ];

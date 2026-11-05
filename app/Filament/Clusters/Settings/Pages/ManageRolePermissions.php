@@ -78,7 +78,7 @@ class ManageRolePermissions extends Page
      */
     private static function permissionOptions(): array
     {
-        $locked = [Permission::SettingsManage, Permission::UsersManage];
+        $locked = [Permission::SettingsManage, Permission::UsersManage, Permission::PrivacyManage];
 
         return collect(Permission::cases())
             ->reject(fn (Permission $p) => in_array($p, $locked, true))

@@ -181,7 +181,7 @@
                     </label>
                     <label class="flex items-start gap-2 text-sm sm:col-span-2">
                         <input type="checkbox" wire:model="privacy" class="mt-1 accent-brand-500">
-                        <span>{{ __('portal.builder.summary.privacy') }}</span>
+                        <span>{{ __('portal.builder.summary.privacy') }} <a href="{{ route('portal.privacy') }}" target="_blank" class="text-brand-500 underline">{{ __('privacy.legal.privacy_title') }}</a></span>
                     </label>
                     @error('privacy') <span class="text-sm text-danger sm:col-span-2">{{ $message }}</span> @enderror
                     <label class="flex items-start gap-2 text-sm sm:col-span-2">

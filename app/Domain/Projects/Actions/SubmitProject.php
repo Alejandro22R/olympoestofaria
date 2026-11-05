@@ -6,6 +6,7 @@ use App\Domain\Auth\Permission;
 use App\Domain\Notifications\Customer\CustomerEvents;
 use App\Domain\Notifications\StaffNotifier;
 use App\Domain\Pricing\EstimateCalculator;
+use App\Domain\Privacy\ConsentRecorder;
 use App\Domain\Projects\Enums\ProjectStatus;
 use App\Domain\Projects\Events\LeadCreated;
 use App\Domain\Projects\ProjectRules;
@@ -60,6 +61,14 @@ class SubmitProject
                 $customer->contact_opt_in_at = now();
             }
             $customer->save();
+
+            // Prueba del consentimiento (privacidad obligatoria; contacto opcional).
+            $consents = app(ConsentRecorder::class);
+            $consents->record($customer, ConsentRecorder::PRIVACY, true, 'portal');
+            if ($customer->lgpd_consent_at === null) {
+                $customer->forceFill(['lgpd_consent_at' => now()])->save();
+            }
+            $consents->record($customer, ConsentRecorder::CONTACT, (bool) ($validated['contact_opt_in'] ?? false), 'portal');
 
             $referrer = filled($validated['referral'] ?? null)
                 ? Customer::query()->where('referral_code', strtoupper((string) $validated['referral']))->whereKeyNot($customer->id)->first()

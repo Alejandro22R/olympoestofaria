@@ -110,6 +110,13 @@ WhatsApp viene **desactivado**. Mientras esté así, los avisos salen por correo
 
 Solo reciben WhatsApp los clientes que aceptaron el contacto (opt-in del constructor o de la ficha). El token se guarda cifrado y nunca se muestra de vuelta.
 
+## Producción, seguridad y LGPD
+
+- Despliegue paso a paso (servidor, HTTPS, Nginx, Supervisor, cron, Sentry, copias, lista de lanzamiento): [docs/DEPLOY.md](docs/DEPLOY.md).
+- Auditoría de seguridad y cumplimiento: [docs/SECURITY.md](docs/SECURITY.md).
+- Primer dueño en producción: `php artisan olympo:create-owner correo@dominio "Nombre"`.
+- Accesibilidad (axe-core): `npm run test:a11y`. Carga: `npm run test:load` (y `tests/load/k6-portal.js`).
+
 ## Usuarios de demostración
 
 Creados por `UserSeeder` solo fuera de producción. Contraseña: `password`.

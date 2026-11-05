@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Customers\Schemas;
 
 use App\Models\Customer;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -45,6 +46,25 @@ class CustomerInfolist
                                     ])
                                     : __('customers.messages.no_document');
                             }),
+                    ]),
+                Section::make(__('privacy.consents.title'))
+                    ->collapsible()->collapsed()
+                    ->schema([
+                        TextEntry::make('anonymized_at')->label(__('privacy.fields.anonymized_at'))->dateTime()
+                            ->visible(fn (Customer $record) => $record->isAnonymized())->badge()->color('danger'),
+                        RepeatableEntry::make('consents')->hiddenLabel()
+                            ->placeholder(__('privacy.consents.empty'))
+                            ->columns(4)
+                            ->schema([
+                                TextEntry::make('created_at')->label(__('privacy.consents.at'))->dateTime(),
+                                TextEntry::make('type')->label(__('privacy.consents.type'))
+                                    ->formatStateUsing(fn (string $state) => __('privacy.consents.types.'.$state)),
+                                TextEntry::make('granted')->label(__('privacy.consents.granted'))->badge()
+                                    ->formatStateUsing(fn (bool $state) => $state ? __('privacy.consents.yes') : __('privacy.consents.no'))
+                                    ->color(fn (bool $state) => $state ? 'success' : 'gray'),
+                                TextEntry::make('source')->label(__('privacy.consents.source'))
+                                    ->formatStateUsing(fn (string $state) => __('privacy.consents.sources.'.$state)),
+                            ]),
                     ]),
             ]);
     }

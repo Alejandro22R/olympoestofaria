@@ -42,6 +42,7 @@ return [
         'document_on_file' => 'Arquivo :mime enviado em :date por :user.',
     ],
     'errors' => [
+        'document_photo_disabled' => 'A oficina não guarda fotos de documentos (Ajustes > Privacidade).',
         'consent_required' => 'É necessário o consentimento LGPD do cliente para guardar o documento.',
         'document_mime' => 'Tipo de arquivo não permitido. Envie JPG, PNG, WEBP ou PDF.',
         'document_size' => 'O arquivo não pode ter mais de :max MB.',

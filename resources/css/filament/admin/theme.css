@@ -20,3 +20,11 @@
 .dark .fi-body {
     background-color: var(--color-ink-950);
 }
+
+/* Contraste AA: el rojo de Filament en botones (tono 400/600) con texto blanco no llega a 4,5:1; se usan 700/800. */
+.fi-btn.fi-color-danger {
+    --bg: var(--danger-700);
+    --dark-bg: var(--danger-700);
+    --hover-bg: var(--danger-800);
+    --dark-hover-bg: var(--danger-800);
+}

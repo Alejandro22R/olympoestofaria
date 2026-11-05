@@ -42,6 +42,7 @@ return [
         'document_on_file' => 'Archivo :mime subido el :date por :user.',
     ],
     'errors' => [
+        'document_photo_disabled' => 'El taller no guarda fotos de documentos (Ajustes > Privacidad).',
         'consent_required' => 'Se necesita el consentimiento LGPD del cliente para guardar el documento.',
         'document_mime' => 'Tipo de archivo no permitido. Sube JPG, PNG, WEBP o PDF.',
         'document_size' => 'El archivo no puede pesar más de :max MB.',

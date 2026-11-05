@@ -2,6 +2,8 @@
 
 use App\Domain\Settings\AgendaSettings;
 use App\Domain\Settings\AlertSettings;
+use App\Domain\Settings\AuditSettings;
+use App\Domain\Settings\BackupSettings;
 use App\Domain\Settings\BrandSettings;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\GeneralSettings;
@@ -10,6 +12,7 @@ use App\Domain\Settings\NotificationSettings;
 use App\Domain\Settings\PaymentSettings;
 use App\Domain\Settings\PortalSettings;
 use App\Domain\Settings\PricingSettings;
+use App\Domain\Settings\PrivacySettings;
 use App\Domain\Settings\ProductionSettings;
 use App\Domain\Settings\SecuritySettings;
 use App\Domain\Settings\WarrantySettings;
@@ -42,6 +45,9 @@ return [
         SecuritySettings::class,
         BrandSettings::class,
         IntegrationSettings::class,
+        PrivacySettings::class,
+        BackupSettings::class,
+        AuditSettings::class,
     ],
 
     /*

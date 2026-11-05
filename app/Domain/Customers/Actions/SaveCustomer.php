@@ -2,6 +2,7 @@
 
 namespace App\Domain\Customers\Actions;
 
+use App\Domain\Privacy\ConsentRecorder;
 use App\Domain\Shared\Rules\E164Phone;
 use App\Models\Branch;
 use App\Models\Customer;
@@ -34,7 +35,8 @@ class SaveCustomer
 
         $customer->fill($data);
 
-        if ($consent && $customer->lgpd_consent_at === null) {
+        $newConsent = $consent && $customer->lgpd_consent_at === null;
+        if ($newConsent) {
             $customer->lgpd_consent_at = now();
         }
 
@@ -46,6 +48,10 @@ class SaveCustomer
 
         $customer->branch_id ??= Branch::default()?->id;
         $customer->save();
+
+        if ($newConsent) {
+            app(ConsentRecorder::class)->record($customer, ConsentRecorder::PRIVACY, true, 'panel');
+        }
 
         return $customer;
     }

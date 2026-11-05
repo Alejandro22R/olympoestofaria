@@ -44,6 +44,8 @@ enum Permission: string
     case ReviewsManage = 'reviews.manage';
     case ReportsView = 'reports.view';
     case UsersManage = 'users.manage';
+    /** Exportar y anonimizar clientes (LGPD). Solo el dueño por defecto. */
+    case PrivacyManage = 'privacy.manage';
 
     /**
      * @return array<string, list<self>>

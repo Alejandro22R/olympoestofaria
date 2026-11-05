@@ -1,0 +1,3 @@
+# Planificador de Laravel (alertas, avisos, pagos, respaldos, retención, auditoría).
+# Instalar con: crontab -u www-data deploy/cron
+* * * * * cd /var/www/olympo/current && php artisan schedule:run >> /dev/null 2>&1

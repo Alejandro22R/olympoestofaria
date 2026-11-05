@@ -28,7 +28,7 @@
                             data-card="{{ $card['id'] }}">
                             <div class="flex items-center justify-between gap-2">
                                 <a href="{{ $card['url'] }}" class="font-display font-semibold hover:underline">{{ $card['plate'] }}</a>
-                                <span class="text-xs text-gray-500">{{ $card['number'] }}</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">{{ $card['number'] }}</span>
                             </div>
                             <p class="truncate text-gray-600 dark:text-gray-300">{{ $card['vehicle'] }} · {{ $card['customer'] }}</p>
                             <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
@@ -36,7 +36,7 @@
                                     <x-filament::badge size="sm" :color="$card['late'] ? 'danger' : 'gray'" icon="heroicon-m-clock">{{ $card['due'] }}</x-filament::badge>
                                 @endif
                                 @if ($card['responsible'])
-                                    <span class="text-gray-500">{{ $card['responsible'] }}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{{ $card['responsible'] }}</span>
                                 @endif
                             </div>
                             @if ($card['can_move'] && $card['targets'] !== [])
