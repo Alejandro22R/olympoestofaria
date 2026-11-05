@@ -1,13 +1,21 @@
 <?php
 
 use App\Http\Controllers\Admin\ShowCustomerDocument;
+use App\Http\Controllers\Portal\CatalogController;
+use App\Http\Controllers\Portal\HomeController;
+use App\Http\Controllers\Portal\ProjectSentController;
 use App\Http\Controllers\ShowDeliveryReport;
 use App\Http\Controllers\ShowInspectionReport;
 use App\Http\Middleware\SetLocale;
+use App\Livewire\Portal\ProjectBuilder;
 use Illuminate\Support\Facades\Route;
 
+// Portal público (PLAN.md §2.2): catálogo y constructor abiertos; registro solo al enviar.
 Route::middleware(SetLocale::class)->group(function () {
-    Route::view('/', 'portal.home')->name('home');
+    Route::get('/', HomeController::class)->name('home');
+    Route::get('catalogo', CatalogController::class)->name('portal.catalog');
+    Route::get('projeto', ProjectBuilder::class)->name('portal.builder');
+    Route::get('projeto/enviado/{project}', ProjectSentController::class)->middleware('signed')->name('portal.project.sent');
 });
 
 // Acta de recepción para el cliente: enlace firmado con vencimiento (Ajustes > Check-in).

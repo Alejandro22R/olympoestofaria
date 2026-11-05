@@ -12,6 +12,9 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
+/**
+ * @property PricingUnit $pricing_unit
+ */
 #[Fillable(['slug', 'name', 'description', 'base_price_cents', 'pricing_unit', 'estimated_hours', 'material_m2', 'sort', 'is_active'])]
 class ServiceType extends Model implements Translatable
 {

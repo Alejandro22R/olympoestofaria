@@ -60,3 +60,23 @@
 **Aceptación:** una orden consume inventario, avanza por el tablero y cierra con acta. Cubierto por pruebas (241 en verde), Pint y Larastan sin errores.
 
 **Decisión aplicada:** el acta de entrega sale sin firma, con envío y registro (opción prevista en el plan). Si se decide usar firma, se agrega en la página de entrega sin cambiar el resto.
+
+## Fase 4: Portal del cliente y constructor ✅
+
+- **Landing de impacto** (`/`, PLAN.md §2.2): hero con video en bucle (MP4/WebM + póster precargado, sin audio, solo póster con "reducir movimiento" o ahorro de datos), titular palabra por palabra en CSS (no espera al JS para el LCP), cinta de marcas, círculo de marca que crece con el scroll, servicios con inclinación y zoom (enlazan al constructor con la pieza preseleccionada), configurador en vivo, antes y después arrastrable (solo `translateX`, accesible con teclado), galería filtrable con FLIP, reels, materiales con panel lateral y textura con parallax, línea de tiempo del proceso (etapas visibles al cliente), contadores animados y CTA fijo en móvil. Secciones activables desde Ajustes.
+- **Movimiento**: GSAP + ScrollTrigger + Lenis solo en la home (`resources/js/landing.js`), animando únicamente `transform` y `opacity`, con limpieza en `livewire:navigating`. Sin JS o con `prefers-reduced-motion` todo el contenido está visible y estático. Transiciones entre páginas con View Transitions API.
+- **Catálogo público** (`/catalogo`): materiales con sus colores (filtro por tipo, panel de detalle) y galería de trabajos filtrable por marca, servicio y material, con hover-play de clips.
+- **Constructor** (`/projeto`, Livewire): vehículo → piezas → material y color → resumen y contacto. Visualizador SVG del interior (asientos, volante, puertas, techo, piso y costura) con fundido de color por opacidad. Borrador guardado en la sesión. Registro ligero (nombre, WhatsApp, correo), consentimiento LGPD obligatorio y opt-in de contacto. Honeypot y límite de 5 envíos por hora por IP.
+- **Rango estimado** (`EstimateCalculator`, cubierto al 100 % por pruebas): mano de obra = precio base × cantidad (o × m² si la unidad es m²), material = m² × precio por m²; rango = subtotal ∓ margen, mínimo redondeado hacia abajo y máximo hacia arriba. Margen, redondeo y "mostrar estimado" en Ajustes > Cotizaciones y precios. El servidor recalcula siempre; nunca se confía en el navegador.
+- **Leads** (`/admin/projects`): el proyecto llega como solicitud con aviso en vivo (campana + evento `lead.created`; la lista se refresca sola). Estados nuevo → contactado → cotizado → aprobado / perdido (con motivo). Botón para responder por WhatsApp. Confirmación para el cliente con enlace firmado y botón de WhatsApp al taller con el resumen.
+- **Medios**: biblioteca en el panel (`/admin/gallery-items`) con `spatie/laravel-medialibrary`: fotos con conversiones WebP y `srcset`, foto del antes, video convertido en cola por FFmpeg a MP4 H.264 + WebM VP9 sin audio y póster (`ProcessGalleryVideo`), aviso al usuario que lo subió por su canal privado, y selector de "dónde se muestra" (portada, galería, antes/después, tarjeta de servicio, reels). Los videos solo se reproducen visibles y como máximo 2 a la vez en móvil.
+- **Ajustes nuevos**: Cotizaciones y precios; Catálogo y portal (titular y subtítulo pt/es, secciones, contadores, Instagram, SEO).
+- **SEO**: título, descripción, canonical, `hreflang` pt-BR/es y Open Graph por página; todo el texto en el HTML.
+- **Auditoría Lighthouse (móvil, servidor de desarrollo sin compresión)**: inicio 85/100/100/100 (rendimiento/accesibilidad/buenas prácticas/SEO), catálogo 97/100/100/100, constructor 84–98/100/100/100; CLS 0–0,013. El LCP de la home (≈3,5 s) está dominado por el servidor de desarrollo; repetir la medición en producción (gzip/brotli, HTTP/2, CDN) y en un teléfono real.
+- Datos demo: 6 trabajos con imágenes generadas y un clip del hero generado con FFmpeg (marcadores propios, sin licencias de terceros).
+
+**Aceptación:** un visitante arma un proyecto, ve el estimado y el taller lo recibe como lead. Cubierto por pruebas (301 en verde), Pint y Larastan sin errores.
+
+**Notas de diseño:** `steel-500` (#737373) sobre negro da 4,42:1 y no llega a AA para texto pequeño; en el portal se usa `steel-300` para texto y `steel-500` solo como acento.
+
+**Pendiente del taller:** video real de costura (horizontal 1920×1080 y vertical 720×1280), fotos originales de trabajos y antes/después, y autorización escrita de uso de imágenes.

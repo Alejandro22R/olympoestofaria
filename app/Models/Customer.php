@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-#[Fillable(['branch_id', 'user_id', 'name', 'email', 'phone', 'document_type', 'document_number', 'lgpd_consent_at', 'locale', 'notes'])]
+#[Fillable(['branch_id', 'user_id', 'name', 'email', 'phone', 'document_type', 'document_number', 'lgpd_consent_at', 'contact_opt_in_at', 'locale', 'notes'])]
 #[Hidden(['document_number', 'document_hash'])]
 class Customer extends Model
 {
@@ -29,6 +29,7 @@ class Customer extends Model
             'document_type' => DocumentType::class,
             'document_number' => 'encrypted',
             'lgpd_consent_at' => 'datetime',
+            'contact_opt_in_at' => 'datetime',
         ];
     }
 
@@ -101,6 +102,14 @@ class Customer extends Model
     public function appointments(): HasManyThrough
     {
         return $this->hasManyThrough(Appointment::class, Vehicle::class);
+    }
+
+    /**
+     * @return HasMany<Project, $this>
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
     }
 
     public function hasLgpdConsent(): bool

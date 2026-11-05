@@ -34,6 +34,10 @@ enum Permission: string
     case WorkOrdersProgress = 'work_orders.progress';
     case DeliveriesManage = 'deliveries.manage';
 
+    case LeadsView = 'leads.view';
+    case LeadsManage = 'leads.manage';
+    case MediaManage = 'media.manage';
+
     case InventoryView = 'inventory.view';
     case InventoryManage = 'inventory.manage';
 
@@ -56,6 +60,7 @@ enum Permission: string
                 self::InspectionsView, self::InspectionsManage,
                 self::WorkOrdersView, self::WorkOrdersManage, self::WorkOrdersProgress, self::DeliveriesManage,
                 self::InventoryView, self::InventoryManage,
+                self::LeadsView, self::LeadsManage, self::MediaManage,
             ],
             Role::Upholsterer->value => [
                 self::AccessPanel,

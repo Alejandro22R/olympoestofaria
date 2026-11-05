@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'lead_created' => 'Nueva solicitud: :vehicle',
+    'lead_created_body' => 'Proyecto :number enviado desde el sitio.',
     'open' => 'Abrir',
     'appointment_created' => 'Nueva cita: :plate',
     'appointment_moved' => 'Cita modificada: :plate',

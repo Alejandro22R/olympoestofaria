@@ -3,6 +3,8 @@
 use App\Domain\Settings\AgendaSettings;
 use App\Domain\Settings\CheckinSettings;
 use App\Domain\Settings\GeneralSettings;
+use App\Domain\Settings\PortalSettings;
+use App\Domain\Settings\PricingSettings;
 use App\Domain\Settings\ProductionSettings;
 use App\Domain\Settings\WarrantySettings;
 use Spatie\LaravelData\Data;
@@ -24,6 +26,8 @@ return [
         CheckinSettings::class,
         ProductionSettings::class,
         WarrantySettings::class,
+        PricingSettings::class,
+        PortalSettings::class,
     ],
 
     /*

@@ -26,6 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: FFmpeg (pipeline de video)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'

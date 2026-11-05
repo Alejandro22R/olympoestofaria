@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Domain\Settings\GeneralSettings;
 use App\Domain\Settings\Listeners\AuditSettingsChanges;
+use App\Http\Middleware\SetLocale;
 use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentTimezone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Spatie\LaravelSettings\Events\SavingSettings;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
 
         // En portugués y español los títulos no van en "Title Case" ("Ordens de serviço", no "Ordens De Serviço").
         Resource::titleCaseModelLabel(false);
+
+        // El idioma del portal también se aplica a las peticiones de Livewire (constructor).
+        Livewire::addPersistentMiddleware([SetLocale::class]);
     }
 }
