@@ -22,18 +22,32 @@ Sistema web del taller de tapicería automotriz Olympo: portal del cliente (cat�
 
 Pest 4 y activitylog 4 se eligieron porque sus versiones 5 exigen PHP 8.4. La plataforma de Composer está fijada en PHP 8.3 (`config.platform.php`) para que el lock siga siendo compatible.
 
-## Puesta en marcha
+## Puesta en marcha (local)
 
-### Con Docker (Laravel Sail)
+El código está en la rama `claude/brave-curie-uoh85c`.
+
+```bash
+git clone https://github.com/Alejandro22R/olympoestofaria.git
+```
+
+```bash
+cd olympoestofaria && git checkout claude/brave-curie-uoh85c
+```
+
+### Opción A: con Docker (recomendada; en Windows, dentro de WSL2)
+
+Solo necesitas Docker Desktop. PHP 8.5, PostgreSQL, Redis, FFmpeg y Node vienen en los contenedores.
 
 ```bash
 cp .env.example .env
 ```
 
-En `.env`, cambia `DB_HOST=pgsql` y `REDIS_HOST=redis`. Luego:
+En `.env` cambia: `APP_URL=http://localhost`, `DB_HOST=pgsql`, `REDIS_HOST=redis`.
+
+Dependencias de PHP sin instalar PHP en tu PC:
 
 ```bash
-composer install
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
 ```
 
 ```bash
@@ -45,19 +59,48 @@ composer install
 ```
 
 ```bash
+./vendor/bin/sail artisan storage:link
+```
+
+```bash
 ./vendor/bin/sail artisan migrate --seed
 ```
 
 ```bash
-./vendor/bin/sail npm install && ./vendor/bin/sail npm run build
+./vendor/bin/sail npm install
 ```
 
-### Sin Docker
+```bash
+./vendor/bin/sail npm run build
+```
 
-Necesitas PHP 8.3+, PostgreSQL y Redis locales. Crea las bases `olympo` y `olympo_test` (usuario `olympo` / `secret`, o ajusta `.env` y `phpunit.xml`).
+Procesos en segundo plano (cada uno en su terminal):
+
+```bash
+./vendor/bin/sail artisan queue:listen --tries=1
+```
+
+```bash
+./vendor/bin/sail artisan reverb:start --host=0.0.0.0
+```
+
+```bash
+./vendor/bin/sail artisan schedule:work
+```
+
+Abre http://localhost (portal) y http://localhost/admin (panel).
+
+### Opción B: sin Docker
+
+Necesitas PHP 8.3+ (extensiones `pgsql`, `redis` o `predis`, `intl`, `gd`, `zip`, `bcmath`), Composer, Node 22, PostgreSQL y Redis. FFmpeg es opcional (videos de la galería).
+Crea el usuario `olympo` (contraseña `secret`) y las bases `olympo` y `olympo_test`, o ajusta `.env` y `phpunit.xml`.
 
 ```bash
 composer setup
+```
+
+```bash
+php artisan storage:link
 ```
 
 ```bash
@@ -68,7 +111,7 @@ php artisan migrate --seed
 composer dev
 ```
 
-Procesos aparte: `php artisan reverb:start` (WebSockets) y `php artisan horizon` (colas).
+`composer dev` levanta el servidor (http://localhost:8000), la cola, los logs y Vite. Aparte: `php artisan reverb:start` (tiempo real) y `php artisan schedule:work` (alertas y tareas programadas).
 
 ## Despliegue
 
