@@ -15,7 +15,7 @@
                 <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     @foreach ($actions as $action)
                         <a href="{{ $action['url'] }}" data-tour="{{ $action['tour'] }}"
-                           class="group flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 transition hover:ring-primary-500 dark:bg-gray-900 dark:ring-white/10 dark:hover:ring-primary-500">
+                           class="olympo-card group flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 transition hover:ring-primary-500 dark:bg-gray-900 dark:ring-white/10 dark:hover:ring-primary-500">
                             <span class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white transition-transform group-hover:scale-105">
                                 <x-filament::icon :icon="$action['icon']" class="size-6" />
                             </span>
@@ -66,7 +66,7 @@
             @if (count($cards))
                 <div @class(['grid content-start gap-3', 'sm:grid-cols-2 lg:col-span-3 lg:grid-cols-4' => ! $calendarUrl]) data-tour="dash-pending">
                     @foreach ($cards as $card)
-                        <a href="{{ $card['url'] }}" class="flex items-center justify-between gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 transition hover:ring-primary-500 dark:bg-gray-900 dark:ring-white/10">
+                        <a href="{{ $card['url'] }}" class="olympo-card flex items-center justify-between gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 transition hover:ring-primary-500 dark:bg-gray-900 dark:ring-white/10">
                             <span class="flex items-center gap-3">
                                 <x-filament::icon :icon="$card['icon']" @class(['size-6', 'text-success-600 dark:text-success-400' => $card['color'] === 'success', 'text-danger-600 dark:text-danger-400' => $card['color'] === 'danger', 'text-warning-600 dark:text-warning-400' => $card['color'] === 'warning', 'text-primary-600 dark:text-primary-400' => $card['color'] === 'info']) />
                                 <span class="text-sm font-medium text-gray-950 dark:text-white">{{ $card['label'] }}</span>

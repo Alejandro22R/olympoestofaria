@@ -210,3 +210,7 @@
   - El progreso se guarda por usuario (`users.completed_tours`). Los textos están en pt-BR y es.
   - Respeta "reducir movimiento" y usa los colores y fuentes de la marca.
 - Accesibilidad: sin violaciones WCAG 2.1 AA (axe-core, 20 páginas). Pruebas: 491 en verde.
+- **Modo claro del panel con más contraste**:
+  - Fondo gris azulado para que resalten las tarjetas blancas, con bordes y sombras visibles en tarjetas, secciones, listas, campos y estadísticas.
+  - Ítem activo del menú en azul de marca, franja de color en las estadísticas, y textos secundarios e íconos un tono más oscuros.
+  - El modo oscuro no cambia. Ambos modos sin violaciones WCAG 2.1 AA (`THEME=light npm run test:a11y`).

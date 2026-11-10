@@ -28,6 +28,11 @@
     --dark-bg: var(--danger-700);
     --hover-bg: var(--danger-800);
     --dark-hover-bg: var(--danger-800);
+    /* Texto blanco en ambos temas (en el claro Filament lo pondría oscuro sobre el rojo). */
+    --text: var(--color-white);
+    --hover-text: var(--color-white);
+    --dark-text: var(--color-white);
+    --dark-hover-text: var(--color-white);
 }
 
 /* Tutoriales (driver.js) con la marca: tarjeta del panel, Sora/Manrope y botón principal brand-700. */
@@ -107,3 +112,111 @@
 .dark .driver-popover.olympo-tour .driver-popover-arrow-side-bottom.driver-popover-arrow { border-bottom-color: var(--gray-900); }
 .dark .driver-popover.olympo-tour .driver-popover-arrow-side-left.driver-popover-arrow { border-left-color: var(--gray-900); }
 .dark .driver-popover.olympo-tour .driver-popover-arrow-side-right.driver-popover-arrow { border-right-color: var(--gray-900); }
+
+/* ===========================================================================
+   Modo claro con más contraste y color (el oscuro no cambia).
+   - Fondo gris azulado suave para que las tarjetas blancas resalten.
+   - Bordes y sombras visibles en tarjetas, secciones y listas.
+   - Textos secundarios e íconos un tono más oscuros (AA cómodo).
+   - Menú con el ítem activo en azul de marca y barra superior definida.
+   Solo variables de Filament (paletas gray/primary generadas de los tokens de marca).
+   =========================================================================== */
+html:not(.dark) {
+    /* Grises secundarios un paso más oscuros: subtítulos, íconos y textos de ayuda. */
+    --gray-400: oklch(0.62 0 0);
+    --gray-500: oklch(0.48 0 0);
+    --olympo-surface: color-mix(in oklab, var(--gray-100) 82%, var(--primary-100));
+    --olympo-border: color-mix(in oklab, var(--gray-300) 80%, var(--primary-200));
+    --olympo-card-shadow: 0 0 0 1px var(--olympo-border), 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px -4px rgb(15 23 42 / 0.08);
+}
+
+html:not(.dark) .fi-body {
+    background-color: var(--olympo-surface);
+}
+
+/* Barra superior blanca con borde marcado. */
+html:not(.dark) .fi-topbar {
+    background-color: var(--color-white);
+    box-shadow: 0 1px 0 var(--olympo-border), 0 2px 8px -4px rgb(15 23 42 / 0.1);
+}
+
+/* Menú lateral: grupos legibles y el ítem activo en azul de marca. */
+html:not(.dark) .fi-sidebar-group-label {
+    color: var(--gray-600);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+html:not(.dark) .fi-sidebar-item-label {
+    color: var(--gray-800);
+}
+
+html:not(.dark) .fi-sidebar-item-btn:hover,
+html:not(.dark) .fi-sidebar-item-btn:focus-visible {
+    background-color: color-mix(in oklab, var(--primary-100) 70%, var(--color-white));
+}
+
+html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: var(--primary-600);
+    box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--primary-600) 60%, transparent);
+}
+
+html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label,
+html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
+html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-icon,
+html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-grouped-border-part {
+    color: var(--color-white);
+}
+
+/* Tarjetas, secciones, listas y estadísticas: borde y sombra visibles. */
+html:not(.dark) .fi-section:not(.fi-section-not-contained),
+html:not(.dark) .fi-ta-ctn,
+html:not(.dark) .fi-wi-stats-overview-stat,
+html:not(.dark) .fi-wi-chart .fi-section,
+html:not(.dark) .fi-fo-repeater-item,
+html:not(.dark) .olympo-card {
+    background-color: var(--color-white);
+    box-shadow: var(--olympo-card-shadow);
+}
+
+html:not(.dark) .fi-section-header,
+html:not(.dark) .fi-ta-header-toolbar {
+    background-color: color-mix(in oklab, var(--gray-50) 60%, var(--primary-50));
+}
+
+html:not(.dark) .fi-section-header-heading {
+    color: var(--gray-950);
+}
+
+/* Tarjetas de las listas: borde, sombra y realce en azul al pasar el mouse. */
+html:not(.dark) .fi-ta-content-grid .fi-ta-record {
+    background-color: var(--color-white);
+    box-shadow: var(--olympo-card-shadow);
+}
+
+html:not(.dark) .fi-ta-content-grid .fi-ta-record:hover {
+    box-shadow: 0 0 0 2px var(--primary-500), 0 6px 16px -6px rgb(15 23 42 / 0.18);
+}
+
+html:not(.dark) .fi-ta-content-grid {
+    background-color: var(--olympo-surface);
+}
+
+/* Estadísticas del dueño: franja de color arriba. */
+html:not(.dark) .fi-wi-stats-overview-stat {
+    border-top: 3px solid var(--primary-600);
+}
+
+/* Subtítulo de cada módulo y migas de pan con más contraste. */
+html:not(.dark) .fi-header-subheading {
+    color: var(--gray-700);
+}
+
+/* Campos de formulario con borde visible. */
+html:not(.dark) .fi-input-wrp {
+    box-shadow: 0 0 0 1px var(--olympo-border);
+}
+
+html:not(.dark) .fi-input-wrp:focus-within {
+    box-shadow: 0 0 0 2px var(--primary-600);
+}

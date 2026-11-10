@@ -25,7 +25,7 @@
                     @forelse ($column['cards'] as $card)
                         <li wire:key="card-{{ $card['id'] }}"
                             @if ($card['can_move']) draggable="true" x-on:dragstart="dragging = {{ $card['id'] }}" x-on:dragend="dragging = null" @endif
-                            class="rounded-lg border border-gray-200 bg-white p-3 text-sm shadow-sm transition-transform duration-200 hover:-translate-y-0.5 dark:border-white/10 dark:bg-gray-900 {{ $card['can_move'] ? 'cursor-grab active:cursor-grabbing' : '' }}"
+                            class="olympo-card rounded-lg border border-gray-200 bg-white p-3 text-sm shadow-sm transition-transform duration-200 hover:-translate-y-0.5 dark:border-white/10 dark:bg-gray-900 {{ $card['can_move'] ? 'cursor-grab active:cursor-grabbing' : '' }}"
                             data-card="{{ $card['id'] }}" @if ($loop->parent->first && $loop->first) data-tour="board-card" @endif>
                             <div class="flex items-center justify-between gap-2">
                                 <a href="{{ $card['url'] }}" class="font-display font-semibold hover:underline">{{ $card['plate'] }}</a>
@@ -55,7 +55,7 @@
                             @endif
                         </li>
                     @empty
-                        <li class="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-400 dark:border-white/10">{{ __('work_orders.empty_column') }}</li>
+                        <li class="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-600 dark:border-white/10 dark:text-gray-400">{{ __('work_orders.empty_column') }}</li>
                     @endforelse
                 </ul>
             </section>

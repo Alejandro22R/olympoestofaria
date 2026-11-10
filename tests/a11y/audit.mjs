@@ -1,6 +1,6 @@
 // Auditoría de accesibilidad (WCAG 2.1 AA) con axe-core sobre las páginas principales.
 // Uso: servidor corriendo (php artisan serve) y luego:
-//   BASE_URL=http://127.0.0.1:8000 node tests/a11y/audit.mjs
+//   BASE_URL=http://127.0.0.1:8000 node tests/a11y/audit.mjs   (THEME=light para el panel en modo claro)
 // Opcional: ADMIN_EMAIL / ADMIN_PASSWORD para auditar el panel (por defecto, el dueño demo).
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -34,7 +34,12 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1366, height: 900 
     await page.close();
 }
 
-const admin = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+// THEME=light audita el panel en modo claro (por defecto, el oscuro).
+const adminContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+if (process.env.THEME === 'light') {
+    await adminContext.addInitScript(() => localStorage.setItem('filament:theme:mode', 'light'));
+}
+const admin = await adminContext.newPage();
 await admin.goto(base + '/admin/login');
 await admin.fill('input[type=email]', process.env.ADMIN_EMAIL ?? 'owner@olympo.test');
 await admin.fill('input[type=password]', process.env.ADMIN_PASSWORD ?? 'password');
