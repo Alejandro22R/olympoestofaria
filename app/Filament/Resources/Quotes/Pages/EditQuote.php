@@ -91,7 +91,7 @@ class EditQuote extends EditRecord
         $can = fn () => (bool) auth()->user()?->can('update', $this->quote());
 
         return [
-            Action::make('send')
+            Action::make('send')->extraAttributes(['data-tour' => 'quote-send'])
                 ->label(fn () => $this->quote()->status === QuoteStatus::Draft ? __('quotes.actions.send') : __('quotes.actions.resend'))
                 ->icon(Heroicon::OutlinedPaperAirplane)
                 ->visible(fn () => $can() && in_array($this->quote()->status, [QuoteStatus::Draft, QuoteStatus::Sent], true))
@@ -120,7 +120,7 @@ class EditQuote extends EditRecord
                     Notification::make()->success()->title(__('payments.messages.pix_created', ['amount' => Money::format($payment->amount_cents)]))
                         ->body(__('payments.messages.pix_share'))->persistent()->send();
                 }),
-            Action::make('manualPayment')
+            Action::make('manualPayment')->extraAttributes(['data-tour' => 'quote-payment'])
                 ->label(__('payments.actions.record_manual'))
                 ->icon(Heroicon::OutlinedBanknotes)
                 ->color('gray')

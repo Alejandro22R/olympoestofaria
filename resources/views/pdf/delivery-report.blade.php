@@ -31,6 +31,7 @@
     <div class="header">
         <table>
             <tr>
+                <td style="width:58px"><img src="{{ public_path('images/brand/emblem-256.png') }}" alt="" style="width:50px;height:50px"></td>
                 <td>
                     <h1>{{ __('deliveries.report.title') }}</h1>
                     <span class="muted">{{ $business->business_name }} · {{ $business->city }}</span>

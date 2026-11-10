@@ -45,7 +45,7 @@ class GenerateInspectionReport
 
         $pdf = Pdf::loadHTML($html)
             ->setPaper('a4')
-            ->setOption(['isRemoteEnabled' => false, 'fontDir' => storage_path('fonts'), 'fontCache' => storage_path('fonts'), 'chroot' => resource_path()]);
+            ->setOption(['isRemoteEnabled' => false, 'fontDir' => storage_path('fonts'), 'fontCache' => storage_path('fonts'), 'chroot' => [resource_path(), public_path('images/brand')]]);
 
         $path = sprintf('inspections/%d/acta-%s.pdf', $inspection->id, Str::uuid());
         Storage::disk($disk)->put($path, $pdf->output());

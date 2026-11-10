@@ -78,4 +78,9 @@ return [
         'contact_first' => 'Marque a solicitação como contatada antes de orçar (Ajustes).',
         'not_approved_vehicle' => 'O orçamento precisa estar aprovado e ter um veículo.',
     ],
+    'cards' => [
+        'valid_until' => 'válido até :date',
+        'deposit_paid' => 'Sinal pago em :date',
+        'deposit_pending' => 'Sinal pendente',
+    ],
 ];

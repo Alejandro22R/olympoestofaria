@@ -82,7 +82,7 @@ class EditWorkOrder extends EditRecord
         $order = $this->order();
 
         return [
-            Action::make('move')
+            Action::make('move')->extraAttributes(['data-tour' => 'wo-move'])
                 ->label(__('work_orders.actions.move'))
                 ->icon(Heroicon::OutlinedArrowsRightLeft)
                 ->visible(fn () => (bool) auth()->user()?->can('progress', $this->order()))
@@ -104,7 +104,7 @@ class EditWorkOrder extends EditRecord
                     Notification::make()->success()->title(__('work_orders.messages.moved', ['stage' => $stage->name]))->send();
                     $this->refreshFormData(['stage_info']);
                 }),
-            Action::make('progress')
+            Action::make('progress')->extraAttributes(['data-tour' => 'wo-progress'])
                 ->label(__('work_orders.actions.progress'))
                 ->icon(Heroicon::OutlinedCamera)
                 ->color('gray')
@@ -121,7 +121,7 @@ class EditWorkOrder extends EditRecord
                     app(MoveWorkOrder::class)->execute($this->order(), $stage, auth()->user(), $data['note'], array_values($data['photos'] ?? []));
                     Notification::make()->success()->title(__('work_orders.messages.progress_saved'))->send();
                 }),
-            Action::make('deliver')
+            Action::make('deliver')->extraAttributes(['data-tour' => 'wo-deliver'])
                 ->label(__('deliveries.actions.deliver'))
                 ->icon(Heroicon::OutlinedKey)
                 ->color('success')

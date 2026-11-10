@@ -4,10 +4,12 @@ namespace App\Filament\Pages;
 
 use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Services\AgendaService;
+use App\Filament\Concerns\HasModuleIntro;
 use App\Filament\Resources\Appointments\AppointmentResource;
 use App\Models\Appointment;
 use BackedEnum;
 use Carbon\CarbonImmutable;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
@@ -20,9 +22,16 @@ use Livewire\Attributes\Url;
  */
 class AppointmentCalendar extends Page
 {
+    use HasModuleIntro;
+
+    protected static function moduleKey(): string
+    {
+        return 'calendar';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
-    protected static ?int $navigationSort = 29;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $slug = 'calendar';
 
@@ -38,7 +47,7 @@ class AppointmentCalendar extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.agenda');
+        return __('navigation.groups.daily');
     }
 
     public function getTitle(): string|Htmlable
@@ -49,6 +58,19 @@ class AppointmentCalendar extends Page
     public static function canAccess(): bool
     {
         return (bool) auth()->user()?->can('viewAny', Appointment::class);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('newAppointment')->label(__('appointments.actions.new'))->icon(Heroicon::OutlinedPlus)
+                ->url(fn () => AppointmentResource::getUrl('create'))
+                ->visible(fn () => (bool) auth()->user()?->can('create', Appointment::class))
+                ->extraAttributes(['data-tour' => 'new-appointment']),
+            Action::make('list')->label(__('appointments.actions.list'))->icon(Heroicon::OutlinedListBullet)->color('gray')
+                ->url(fn () => AppointmentResource::getUrl('index'))
+                ->extraAttributes(['data-tour' => 'appointments-list']),
+        ];
     }
 
     public function mount(): void

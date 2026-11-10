@@ -41,7 +41,7 @@ class GenerateQuotePdf
         $disk = (string) config('olympo.private_disk');
         $path = sprintf('quotes/%d/orcamento-%s.pdf', $quote->id, Str::uuid());
         Storage::disk($disk)->put($path, Pdf::loadHTML($html)->setPaper('a4')
-            ->setOption(['isRemoteEnabled' => false, 'fontDir' => storage_path('fonts'), 'fontCache' => storage_path('fonts'), 'chroot' => resource_path()])
+            ->setOption(['isRemoteEnabled' => false, 'fontDir' => storage_path('fonts'), 'fontCache' => storage_path('fonts'), 'chroot' => [resource_path(), public_path('images/brand')]])
             ->output());
 
         $old = $quote->report_path;

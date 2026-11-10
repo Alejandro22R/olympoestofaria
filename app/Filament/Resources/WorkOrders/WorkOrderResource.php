@@ -22,7 +22,7 @@ class WorkOrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrench;
 
-    protected static ?int $navigationSort = 26;
+    protected static ?int $navigationSort = 4;
 
     public static function getModelLabel(): string
     {
@@ -36,7 +36,7 @@ class WorkOrderResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.production');
+        return __('navigation.groups.daily');
     }
 
     public static function form(Schema $schema): Schema

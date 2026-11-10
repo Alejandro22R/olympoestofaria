@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\WorkOrders\Actions\MoveWorkOrder;
 use App\Domain\WorkOrders\Enums\WorkOrderStatus;
+use App\Filament\Concerns\HasModuleIntro;
 use App\Filament\Resources\WorkOrders\WorkOrderResource;
 use App\Models\WorkflowStage;
 use App\Models\WorkOrder;
@@ -23,9 +24,16 @@ use Livewire\Attributes\On;
  */
 class ProductionBoard extends Page
 {
+    use HasModuleIntro;
+
+    protected static function moduleKey(): string
+    {
+        return 'board';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedViewColumns;
 
-    protected static ?int $navigationSort = 25;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $slug = 'production';
 
@@ -40,7 +48,7 @@ class ProductionBoard extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.production');
+        return __('navigation.groups.daily');
     }
 
     public function getTitle(): string|Htmlable

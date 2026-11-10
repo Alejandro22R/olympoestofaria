@@ -28,9 +28,17 @@ class BrandSettings extends Settings
         return 'brand';
     }
 
+    /** Emblema oficial del taller (el logo por defecto si no se subió uno propio). */
+    public const EMBLEM = 'images/brand/emblem.svg';
+
     public function logoDarkUrl(): string
     {
-        return $this->logo_dark_path ? Storage::disk('public')->url($this->logo_dark_path) : asset('images/brand/logo.svg');
+        return $this->logo_dark_path ? Storage::disk('public')->url($this->logo_dark_path) : asset(self::EMBLEM);
+    }
+
+    public function hasCustomLogo(): bool
+    {
+        return filled($this->logo_dark_path) || filled($this->logo_light_path);
     }
 
     public function logoLightUrl(): ?string

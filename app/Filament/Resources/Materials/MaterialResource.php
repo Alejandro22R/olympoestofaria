@@ -20,7 +20,7 @@ class MaterialResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSwatch;
 
-    protected static ?int $navigationSort = 50;
+    protected static ?int $navigationSort = 22;
 
     public static function getModelLabel(): string
     {
@@ -34,7 +34,7 @@ class MaterialResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.catalog');
+        return __('navigation.groups.workshop');
     }
 
     public static function form(Schema $schema): Schema

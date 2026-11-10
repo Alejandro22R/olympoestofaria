@@ -25,6 +25,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property array<string>|null $app_authentication_recovery_codes
  * @property array<string, mixed>|null $notification_preferences
+ * @property list<string>|null $completed_tours
  */
 #[Fillable(['name', 'email', 'password', 'locale', 'branch_id', 'is_active', 'notification_preferences'])]
 #[Hidden(['password', 'remember_token', 'app_authentication_secret', 'app_authentication_recovery_codes'])]
@@ -43,6 +44,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
             'app_authentication_secret' => 'encrypted',
             'app_authentication_recovery_codes' => 'encrypted:array',
             'last_login_at' => 'datetime',
+            'completed_tours' => 'array',
         ];
     }
 

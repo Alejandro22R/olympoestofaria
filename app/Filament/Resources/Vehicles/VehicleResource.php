@@ -22,7 +22,7 @@ class VehicleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 14;
 
     public static function getModelLabel(): string
     {
@@ -36,7 +36,7 @@ class VehicleResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.operation');
+        return __('navigation.groups.sales');
     }
 
     public static function form(Schema $schema): Schema

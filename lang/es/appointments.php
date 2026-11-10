@@ -40,4 +40,8 @@ return [
         'delivery_before_reception' => 'La entrega debe ser igual o posterior a la recepción.',
         'invalid_transition' => 'No se puede pasar de ":from" a ":to".',
     ],
+    'actions' => [
+        'new' => 'Nueva cita',
+        'list' => 'Ver en lista',
+    ],
 ];

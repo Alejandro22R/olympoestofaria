@@ -2,11 +2,9 @@
 
 return [
     'groups' => [
-        'operation' => 'Operação',
-        'sales' => 'Vendas',
-        'portal' => 'Portal',
-        'catalog' => 'Catálogo',
-        'production' => 'Produção',
-        'agenda' => 'Agenda',
+        'daily' => 'Dia a dia',
+        'sales' => 'Clientes e vendas',
+        'workshop' => 'Oficina',
+        'portal' => 'Site',
     ],
 ];

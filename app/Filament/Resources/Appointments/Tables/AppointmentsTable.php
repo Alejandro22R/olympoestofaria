@@ -6,6 +6,7 @@ use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Filament\Resources\Appointments\AppointmentResource;
 use App\Filament\Resources\Appointments\Pages\CheckInAppointment;
 use App\Filament\Resources\Inspections\InspectionResource;
+use App\Filament\Support\CardList;
 use App\Models\Appointment;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -21,19 +22,22 @@ class AppointmentsTable
 {
     public static function configure(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'appointments')
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['vehicle.customer', 'inspection']))
             ->defaultSort('scheduled_at')
             ->columns([
-                TextColumn::make('scheduled_at')->label(__('appointments.fields.scheduled_at'))
-                    ->dateTime('D d/m/Y H:i')->sortable(),
-                TextColumn::make('vehicle.plate')->label(__('appointments.fields.vehicle'))
-                    ->formatStateUsing(fn (Appointment $record) => $record->vehicle->label())
-                    ->searchable(),
-                TextColumn::make('vehicle.customer.name')->label(__('appointments.fields.customer'))->searchable(),
-                TextColumn::make('status')->label(__('appointments.fields.status'))->badge(),
-                TextColumn::make('promised_delivery_at')->label(__('appointments.fields.promised_delivery_at'))
-                    ->dateTime('d/m/Y H:i')->placeholder('—')->sortable()->toggleable(),
+                CardList::card(
+                    TextColumn::make('scheduled_at')->label(__('appointments.fields.scheduled_at'))
+                        ->dateTime('D d/m · H:i')->sortable(),
+                    TextColumn::make('status')->label(__('appointments.fields.status')),
+                    [
+                        CardList::detail(TextColumn::make('vehicle.plate')->label(__('appointments.fields.vehicle'))
+                            ->formatStateUsing(fn (Appointment $record) => $record->vehicle->label())->searchable(), 'heroicon-m-truck'),
+                        CardList::detail(TextColumn::make('vehicle.customer.name')->label(__('appointments.fields.customer'))->searchable(), 'heroicon-m-user'),
+                        CardList::detail(TextColumn::make('promised_delivery_at')->label(__('appointments.fields.promised_delivery_at'))
+                            ->dateTime('d/m H:i')->prefix(__('appointments.fields.promised_delivery_at').': ')->placeholder('—')->sortable(), 'heroicon-m-flag'),
+                    ],
+                ),
             ])
             ->filters([
                 SelectFilter::make('status')->label(__('appointments.fields.status'))

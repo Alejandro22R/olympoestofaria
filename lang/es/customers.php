@@ -47,4 +47,9 @@ return [
         'document_mime' => 'Tipo de archivo no permitido. Sube JPG, PNG, WEBP o PDF.',
         'document_size' => 'El archivo no puede pesar más de :max MB.',
     ],
+    'cards' => [
+        'vehicles' => '{0} Sin vehículos|{1} 1 vehículo|[2,*] :count vehículos',
+        'no_email' => 'Sin correo',
+        'since' => 'Cliente desde :date',
+    ],
 ];

@@ -33,4 +33,11 @@ return [
         'missing_for_order' => 'Falta material para esta ordem:',
         'missing_line' => ':item — precisa :needed, há :stock :unit',
     ],
+    'cards' => [
+        'low' => 'Repor',
+        'ok' => 'Em estoque',
+        'stock' => 'Em estoque: :stock :unit',
+        'min' => 'Mínimo: :min',
+        'cost' => ':cost por :unit',
+    ],
 ];

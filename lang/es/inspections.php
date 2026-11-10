@@ -129,4 +129,8 @@ return [
         'zones_invalid' => 'JSON no válido: usa {"zona": {"x":0,"y":0,"w":10,"h":10}} con claves en minúsculas.',
         'checklist_item' => 'Objeto del vehículo',
     ],
+    'cards' => [
+        'marks' => '{0} Sin daños|{1} 1 daño|[2,*] :count daños',
+        'not_sent' => 'Acta aún no enviada',
+    ],
 ];

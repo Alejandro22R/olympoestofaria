@@ -32,7 +32,7 @@ class ReviewResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
-    protected static ?int $navigationSort = 65;
+    protected static ?int $navigationSort = 31;
 
     public static function getModelLabel(): string
     {

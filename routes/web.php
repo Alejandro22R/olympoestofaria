@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CompleteTourController;
 use App\Http\Controllers\Admin\ShowCustomerDocument;
 use App\Http\Controllers\Admin\ShowQuoteReport;
 use App\Http\Controllers\Portal\CatalogController;
@@ -46,6 +47,10 @@ Route::get('actas/{inspection}', ShowInspectionReport::class)
 Route::get('entregas/{delivery}', ShowDeliveryReport::class)
     ->middleware(['signed', 'throttle:30,1'])
     ->name('deliveries.report');
+
+// Tutoriales guiados del panel: marca el tutorial como visto.
+Route::post('admin/tours/{tour}', CompleteTourController::class)
+    ->middleware(['auth', 'throttle:60,1'])->where('tour', '[a-z_]+')->name('admin.tours.complete');
 
 // Archivos privados del panel: URL firmada + sesión + Policy.
 Route::middleware(['auth', 'signed'])->prefix('admin/private')->group(function () {

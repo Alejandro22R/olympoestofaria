@@ -78,4 +78,9 @@ return [
         'progress_photos_max' => 'Fotos por avanço',
         'unconfirmed_appointment_alert' => 'Avisar agendamentos de amanhã ainda sem confirmar',
     ],
+    'cards' => [
+        'due' => 'Entrega: :date',
+        'no_due' => 'Sem prazo definido',
+        'no_responsible' => 'Sem responsável',
+    ],
 ];

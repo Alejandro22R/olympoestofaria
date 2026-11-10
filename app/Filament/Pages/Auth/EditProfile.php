@@ -2,18 +2,34 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Domain\Tours\Actions\CompleteTour;
 use App\Notifications\StaffAlert;
+use Filament\Actions\Action;
 use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 /**
  * Mi perfil: datos, contraseña, idioma, avisos por correo y verificación en dos pasos (2FA).
  */
 class EditProfile extends BaseEditProfile
 {
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('resetTours')->label(__('tours.labels.reset'))->icon(Heroicon::OutlinedAcademicCap)->color('gray')
+                ->requiresConfirmation()->modalDescription(__('tours.labels.reset_help'))
+                ->action(function (): void {
+                    app(CompleteTour::class)->reset(auth()->user());
+                    Notification::make()->success()->title(__('tours.labels.reset_done'))->send();
+                }),
+        ];
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([

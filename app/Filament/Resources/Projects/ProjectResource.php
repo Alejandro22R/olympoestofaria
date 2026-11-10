@@ -6,6 +6,7 @@ use App\Domain\Projects\Enums\ProjectStatus;
 use App\Domain\Projects\ProjectSummary;
 use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\Pages\ViewProject;
+use App\Filament\Support\CardList;
 use App\Filament\Support\Money;
 use App\Models\Project;
 use BackedEnum;
@@ -31,7 +32,7 @@ class ProjectResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 10;
 
     public static function getModelLabel(): string
     {
@@ -88,18 +89,22 @@ class ProjectResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'projects')
             ->modifyQueryUsing(fn (Builder $query) => $query->with('customer'))
             ->defaultSort('submitted_at', 'desc')
             ->columns([
-                TextColumn::make('id')->label(__('projects.fields.number'))->formatStateUsing(fn (Project $record) => $record->number())->sortable(),
-                TextColumn::make('customer.name')->label(__('projects.fields.customer'))->searchable(),
-                TextColumn::make('customer.phone')->label(__('projects.fields.phone'))->searchable()->toggleable(),
-                TextColumn::make('vehicle')->label(__('projects.fields.vehicle'))->state(fn (Project $record) => $record->vehicleLabel()),
-                TextColumn::make('estimate_max_cents')->label(__('projects.fields.estimate'))
-                    ->formatStateUsing(fn (Project $record) => Money::format($record->estimate_min_cents).' – '.Money::format($record->estimate_max_cents))->sortable(),
-                TextColumn::make('status')->label(__('projects.fields.status'))->badge(),
-                TextColumn::make('submitted_at')->label(__('projects.fields.submitted_at'))->since()->sortable(),
+                CardList::card(
+                    TextColumn::make('customer.name')->label(__('projects.fields.customer'))->searchable(),
+                    TextColumn::make('status')->label(__('projects.fields.status')),
+                    [
+                        CardList::detail(TextColumn::make('vehicle')->label(__('projects.fields.vehicle'))->state(fn (Project $record) => $record->vehicleLabel()), 'heroicon-m-truck'),
+                        CardList::detail(TextColumn::make('customer.phone')->label(__('projects.fields.phone'))->searchable(), 'heroicon-m-phone'),
+                        CardList::detail(TextColumn::make('estimate_max_cents')->label(__('projects.fields.estimate'))
+                            ->formatStateUsing(fn (Project $record) => Money::format($record->estimate_min_cents).' – '.Money::format($record->estimate_max_cents))->sortable(), 'heroicon-m-banknotes'),
+                        CardList::detail(TextColumn::make('submitted_at')->label(__('projects.fields.submitted_at'))->sortable()
+                            ->formatStateUsing(fn (Project $record) => $record->number().' · '.$record->submitted_at?->diffForHumans()), 'heroicon-m-clock'),
+                    ],
+                ),
             ])
             ->filters([
                 SelectFilter::make('status')->label(__('projects.fields.status'))->options(ProjectStatus::class)->multiple(),

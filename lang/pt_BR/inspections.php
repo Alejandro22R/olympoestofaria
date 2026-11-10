@@ -129,4 +129,8 @@ return [
         'zones_invalid' => 'JSON inválido: use {"zona": {"x":0,"y":0,"w":10,"h":10}} com chaves em minúsculas.',
         'checklist_item' => 'Objeto do veículo',
     ],
+    'cards' => [
+        'marks' => '{0} Sem avarias|{1} 1 avaria|[2,*] :count avarias',
+        'not_sent' => 'Termo ainda não enviado',
+    ],
 ];

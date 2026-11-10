@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\Dashboard;
 use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureTwoFactorWhenRequired;
@@ -16,16 +17,17 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -46,8 +48,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Olympo')
             ->defaultAvatarProvider(InitialsAvatarProvider::class)
             // Ajustes > Marca: logo claro para el tema claro y logo oscuro (por defecto) para el oscuro.
-            ->brandLogo(fn () => Brand::settings()?->logoLightUrl() ?? Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))
-            ->darkModeBrandLogo(fn () => Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg'))
+            // Emblema + nombre (o el logo subido en Ajustes > Marca); se adapta al tema claro/oscuro.
+            ->brandLogo(fn () => new HtmlString(view('components.brand-logo')->render()))
             ->brandLogoHeight('2.25rem')
             ->favicon(fn () => Brand::settings()?->faviconUrl() ?? asset('favicon.svg'))
             ->colors([
@@ -64,6 +66,13 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->databaseNotifications()
             ->sidebarCollapsibleOnDesktop()
+            // Menú por flujo de trabajo: lo de todos los días primero, la configuración al final.
+            ->navigationGroups([
+                NavigationGroup::make()->label(fn (): string => __('navigation.groups.daily')),
+                NavigationGroup::make()->label(fn (): string => __('navigation.groups.sales')),
+                NavigationGroup::make()->label(fn (): string => __('navigation.groups.workshop'))->collapsed(),
+                NavigationGroup::make()->label(fn (): string => __('navigation.groups.portal'))->collapsed(),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\Filament\Clusters')
@@ -71,9 +80,10 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-            ])
+            ->widgets([])
+            // Tutoriales guiados: botón "?" en la barra superior y datos del tutorial de la pantalla.
+            ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): string => view('filament.tour-button')->render())
+            ->renderHook(PanelsRenderHook::BODY_END, fn (): string => view('filament.tour')->render())
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

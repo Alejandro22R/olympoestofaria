@@ -2,10 +2,8 @@
     try {
         $general = app(\App\Domain\Settings\GeneralSettings::class);
         $whatsapp = $general->whatsapp ? 'https://wa.me/'.ltrim($general->whatsapp, '+') : null;
-        $logo = \App\Support\Brand::settings()?->logoDarkUrl() ?? asset('images/brand/logo.svg');
     } catch (\Throwable) {
         $whatsapp = null;
-        $logo = asset('images/brand/logo.svg');
     }
 @endphp
 <!DOCTYPE html>
@@ -20,7 +18,7 @@
 </head>
 <body class="flex min-h-screen items-center justify-center px-4">
     <main class="card max-w-md text-center">
-        <img src="{{ $logo }}" alt="Olympo" class="mx-auto mb-8 h-10 w-auto" width="150" height="40">
+        <img src="{{ asset('images/brand/emblem.svg') }}" alt="Olympo Estofaria" class="mx-auto mb-8 size-24" width="96" height="96">
         <h1 class="mb-3 text-3xl font-bold">{{ __('system.maintenance.title') }}</h1>
         <p class="mb-6 text-steel-300">{{ __('system.maintenance.text') }}</p>
         @if ($whatsapp)

@@ -20,7 +20,7 @@ class ServiceTypeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
 
-    protected static ?int $navigationSort = 40;
+    protected static ?int $navigationSort = 21;
 
     public static function getModelLabel(): string
     {
@@ -34,7 +34,7 @@ class ServiceTypeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.catalog');
+        return __('navigation.groups.workshop');
     }
 
     public static function form(Schema $schema): Schema

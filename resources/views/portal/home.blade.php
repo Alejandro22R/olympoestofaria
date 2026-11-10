@@ -35,7 +35,7 @@
         </div>
 
         <div class="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-4 pt-28">
-            <img data-hero-logo src="{{ asset('images/brand/logo-mark.svg') }}" alt="" aria-hidden="true" class="h-16 w-16 md:h-20 md:w-20" width="80" height="80">
+            <img data-hero-logo src="{{ asset('images/brand/emblem.svg') }}" alt="" aria-hidden="true" class="h-16 w-16 md:h-20 md:w-20" width="80" height="80">
             <h1 id="hero-title" class="max-w-4xl text-4xl font-bold leading-[1.05] md:text-7xl">
                 @foreach ($words as $i => $word)
                     <span class="hero-word" style="--i: {{ $i }}">{{ $word }}</span>

@@ -34,5 +34,5 @@ it('forbids users without any role', function () {
 it('renders the login page with the brand', function () {
     $this->get('/admin/login')
         ->assertOk()
-        ->assertSee('images/brand/logo.svg', false);
+        ->assertSee('images/brand/emblem.svg', false);
 });

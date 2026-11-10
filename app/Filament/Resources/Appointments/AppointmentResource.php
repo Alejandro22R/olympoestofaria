@@ -20,7 +20,10 @@ class AppointmentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 5;
+
+    /** La lista de citas se abre desde el calendario (un solo punto de entrada a la agenda). */
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function getModelLabel(): string
     {
@@ -34,7 +37,7 @@ class AppointmentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.agenda');
+        return __('navigation.groups.daily');
     }
 
     public static function form(Schema $schema): Schema

@@ -8,12 +8,14 @@ use App\Domain\Payments\Enums\PaymentStatus;
 use App\Domain\Payments\Gateways\PaymentGateway;
 use App\Domain\Payments\Gateways\PaymentGatewayException;
 use App\Filament\Resources\Payments\Pages\ListPayments;
+use App\Filament\Support\CardList;
 use App\Filament\Support\Money;
 use App\Models\Payment;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentTimezone;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -28,7 +30,7 @@ class PaymentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 12;
 
     public static function getModelLabel(): string
     {
@@ -47,22 +49,24 @@ class PaymentResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'payments')
             ->modifyQueryUsing(fn ($query) => $query->with(['customer', 'quote', 'workOrder', 'recorder']))
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('created_at')->label(__('inspections.fields.created_at'))->dateTime('d/m/Y H:i')->sortable(),
-                TextColumn::make('customer.name')->label(__('quotes.fields.customer'))->searchable(),
-                TextColumn::make('reference')->label(__('payments.fields.reference'))
-                    ->state(fn (Payment $record) => $record->quote?->number() ?? $record->workOrder?->number()),
-                TextColumn::make('type')->label(__('payments.fields.type'))->badge(),
-                TextColumn::make('method')->label(__('payments.fields.method')),
-                TextColumn::make('provider')->label(__('payments.fields.provider'))
-                    ->formatStateUsing(fn (Payment $record) => $record->provider->getLabel().($record->mode === 'sandbox' ? ' ('.__('payments.modes.sandbox').')' : '')),
-                TextColumn::make('amount_cents')->label(__('payments.fields.amount'))->formatStateUsing(fn (int $state) => Money::format($state))->sortable(),
-                TextColumn::make('status')->label(__('payments.fields.status'))->badge(),
-                TextColumn::make('paid_at')->label(__('payments.fields.paid_at'))->dateTime('d/m H:i')->placeholder('—'),
-                TextColumn::make('gateway_id')->label('ID MP')->toggleable(isToggledHiddenByDefault: true)->copyable(),
+                CardList::card(
+                    TextColumn::make('amount_cents')->label(__('payments.fields.amount'))->formatStateUsing(fn (int $state) => Money::format($state))->sortable()
+                        ->extraAttributes(['class' => 'font-display']),
+                    TextColumn::make('status')->label(__('payments.fields.status')),
+                    [
+                        CardList::detail(TextColumn::make('customer.name')->label(__('quotes.fields.customer'))->searchable(), 'heroicon-m-user'),
+                        CardList::detail(TextColumn::make('type')->label(__('payments.fields.type'))
+                            ->formatStateUsing(fn (Payment $record) => $record->type->getLabel().' · '.$record->method->getLabel().' · '.($record->quote?->number() ?? $record->workOrder?->number() ?? '—')), 'heroicon-m-credit-card'),
+                        CardList::detail(TextColumn::make('provider')->label(__('payments.fields.provider'))
+                            ->formatStateUsing(fn (Payment $record) => $record->provider->getLabel().($record->mode === 'sandbox' ? ' ('.__('payments.modes.sandbox').')' : '')), 'heroicon-m-building-library'),
+                        CardList::detail(TextColumn::make('created_at')->label(__('inspections.fields.created_at'))->sortable()
+                            ->formatStateUsing(fn (Payment $record) => $record->paid_at ? __('payments.cards.paid_at', ['date' => $record->paid_at->setTimezone(FilamentTimezone::get())->format('d/m H:i')]) : __('payments.cards.created_at', ['date' => $record->created_at?->setTimezone(FilamentTimezone::get())->format('d/m H:i')])), 'heroicon-m-clock'),
+                    ],
+                ),
             ])
             ->filters([
                 SelectFilter::make('status')->label(__('payments.fields.status'))->options(PaymentStatus::class)->multiple(),

@@ -26,6 +26,9 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:locale" content="{{ app()->getLocale() }}">
     <link rel="icon" href="{{ $brand?->faviconUrl() ?? asset('favicon.svg') }}">
+    <link rel="icon" href="{{ asset('favicon-32.png') }}" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <meta property="og:image" content="{{ asset('images/brand/emblem-512.png') }}">
     @if ($brandCss)<style>{{ $brandCss }}</style>@endif
     @stack('head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -36,7 +39,7 @@
     <header class="fixed inset-x-0 top-0 z-40 border-b border-ink-700/40 bg-ink-950/70 backdrop-blur-md">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
             <a href="{{ route('home') }}" class="no-underline" aria-label="Olympo">
-                <img src="{{ $brand?->logoDarkUrl() ?? asset('images/brand/logo.svg') }}" alt="Olympo" class="h-8 w-auto md:h-9" width="150" height="40">
+                <x-brand-logo tone="portal" />
             </a>
             <nav class="flex items-center gap-4 text-sm" aria-label="{{ __('portal.nav.main') }}">
                 <a href="{{ route('portal.catalog') }}" class="hidden text-steel-300 no-underline hover:text-paper sm:inline">{{ __('portal.nav.catalog') }}</a>

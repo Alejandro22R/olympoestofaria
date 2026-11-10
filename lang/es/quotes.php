@@ -78,4 +78,9 @@ return [
         'contact_first' => 'Marca la solicitud como contactada antes de cotizar (Ajustes).',
         'not_approved_vehicle' => 'La cotización debe estar aprobada y tener un vehículo.',
     ],
+    'cards' => [
+        'valid_until' => 'válida hasta :date',
+        'deposit_paid' => 'Anticipo pagado el :date',
+        'deposit_pending' => 'Anticipo pendiente',
+    ],
 ];

@@ -25,7 +25,7 @@ class CustomerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 13;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -41,7 +41,7 @@ class CustomerResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.operation');
+        return __('navigation.groups.sales');
     }
 
     /**

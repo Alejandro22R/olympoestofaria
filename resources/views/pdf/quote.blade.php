@@ -28,6 +28,7 @@
 <body>
     <div class="header">
         <table><tr>
+            <td style="width:58px"><img src="{{ public_path('images/brand/emblem-256.png') }}" alt="" style="width:50px;height:50px"></td>
             <td><h1>{{ __('quotes.pdf.title') }}</h1><span class="muted">{{ $business->business_name }} · {{ $business->city }}</span></td>
             <td class="r"><span class="num" style="font-size:16px; font-weight:700">{{ $quote->number() }}</span><br>
                 <span class="muted">{{ ($quote->sent_at ?? now())->setTimezone($timezone)->format('d/m/Y') }}</span></td>

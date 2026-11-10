@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Inspections;
 use App\Domain\Inspections\Enums\ReportChannel;
 use App\Filament\Resources\Inspections\Pages\ListInspections;
 use App\Filament\Resources\Inspections\Pages\ViewInspection;
+use App\Filament\Support\CardList;
 use App\Models\ChecklistItem;
 use App\Models\Inspection;
 use App\Models\InspectionMark;
@@ -29,7 +30,7 @@ class InspectionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
-    protected static ?int $navigationSort = 25;
+    protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
@@ -43,7 +44,7 @@ class InspectionResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.operation');
+        return __('navigation.groups.daily');
     }
 
     public static function canCreate(): bool
@@ -105,22 +106,28 @@ class InspectionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'inspections')
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['vehicle.customer', 'sends'])->withCount('marks'))
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('created_at')->label(__('inspections.fields.created_at'))->dateTime('d/m/Y H:i')->sortable(),
-                TextColumn::make('vehicle.plate')->label(__('inspections.fields.vehicle'))
-                    ->formatStateUsing(fn (Inspection $record) => $record->vehicle->label())->searchable(),
-                TextColumn::make('vehicle.customer.name')->label(__('inspections.fields.customer'))->searchable(),
-                TextColumn::make('marks_count')->label(__('inspections.fields.marks_count')),
-                TextColumn::make('last_send')->label(__('inspections.fields.last_send'))
-                    ->state(function (Inspection $record): ?string {
-                        $send = $record->sends->sortByDesc('sent_at')->first();
+                CardList::card(
+                    TextColumn::make('vehicle.plate')->label(__('inspections.fields.vehicle'))
+                        ->formatStateUsing(fn (Inspection $record) => $record->vehicle->label())->searchable(),
+                    TextColumn::make('marks_count')->label(__('inspections.fields.marks_count'))
+                        ->formatStateUsing(fn (int $state) => trans_choice('inspections.cards.marks', $state, ['count' => $state]))
+                        ->color(fn (int $state) => $state > 0 ? 'warning' : 'success'),
+                    [
+                        CardList::detail(TextColumn::make('created_at')->label(__('inspections.fields.created_at'))->dateTime('d/m/Y H:i')->sortable(), 'heroicon-m-calendar'),
+                        CardList::detail(TextColumn::make('vehicle.customer.name')->label(__('inspections.fields.customer'))->searchable(), 'heroicon-m-user'),
+                        CardList::detail(TextColumn::make('last_send')->label(__('inspections.fields.last_send'))
+                            ->state(function (Inspection $record): ?string {
+                                $send = $record->sends->sortByDesc('sent_at')->first();
 
-                        return $send ? $send->channel->getLabel().' · '.$send->sent_at->format('d/m H:i') : null;
-                    })
-                    ->placeholder('—'),
+                                return $send ? $send->channel->getLabel().' · '.$send->sent_at->format('d/m H:i') : null;
+                            })
+                            ->placeholder(__('inspections.cards.not_sent')), 'heroicon-m-paper-airplane'),
+                    ],
+                ),
             ])
             ->recordActions([
                 ViewAction::make(),

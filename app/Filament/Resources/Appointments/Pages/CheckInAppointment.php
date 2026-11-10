@@ -112,7 +112,7 @@ class CheckInAppointment extends Page
 
         return $schema->components([
             Grid::make(['default' => 1, 'lg' => 2])->schema([
-                Section::make(__('inspections.sections.vehicle_state'))
+                Section::make(__('inspections.sections.vehicle_state'))->extraAttributes(['data-tour' => 'checkin-state'])
                     ->schema([
                         TextInput::make('mileage_km')->label(__('inspections.fields.mileage_km'))
                             ->integer()->minValue(0)->maxValue(5_000_000)->suffix('km')
@@ -125,7 +125,7 @@ class CheckInAppointment extends Page
                             ->columns(2),
                         Textarea::make('observations')->label(__('inspections.fields.observations'))->rows(3),
                     ]),
-                Section::make(__('inspections.sections.diagram'))
+                Section::make(__('inspections.sections.diagram'))->extraAttributes(['data-tour' => 'checkin-diagram'])
                     ->description(__('inspections.sections.diagram_help'))
                     ->schema([
                         ViewField::make('diagram')
@@ -169,7 +169,7 @@ class CheckInAppointment extends Page
                             Hidden::make('y'),
                         ]),
                 ]),
-            Section::make(__('inspections.sections.consent'))
+            Section::make(__('inspections.sections.consent'))->extraAttributes(['data-tour' => 'checkin-consent'])
                 ->schema([
                     Checkbox::make('lgpd_consent')->label($settings->consentText())->accepted()
                         ->validationMessages(['accepted' => __('inspections.errors.consent_required')]),

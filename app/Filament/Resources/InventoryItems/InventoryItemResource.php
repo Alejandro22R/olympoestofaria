@@ -8,6 +8,7 @@ use App\Filament\Resources\InventoryItems\Pages\CreateInventoryItem;
 use App\Filament\Resources\InventoryItems\Pages\EditInventoryItem;
 use App\Filament\Resources\InventoryItems\Pages\ListInventoryItems;
 use App\Filament\Resources\InventoryItems\RelationManagers\MovementsRelationManager;
+use App\Filament\Support\CardList;
 use App\Filament\Support\Money;
 use App\Filament\Support\MoneyInput;
 use App\Models\InventoryItem;
@@ -21,6 +22,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -33,7 +35,7 @@ class InventoryItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
-    protected static ?int $navigationSort = 27;
+    protected static ?int $navigationSort = 20;
 
     public static function getModelLabel(): string
     {
@@ -47,7 +49,7 @@ class InventoryItemResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('navigation.groups.production');
+        return __('navigation.groups.workshop');
     }
 
     public static function getNavigationBadge(): ?string
@@ -85,19 +87,25 @@ class InventoryItemResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'inventory')
             ->defaultSort('name')
             ->columns([
-                TextColumn::make('name')->label(__('inventory.fields.name'))->searchable()->sortable(),
-                TextColumn::make('stock')->label(__('inventory.fields.stock'))
-                    ->formatStateUsing(fn (InventoryItem $record) => RecordInventoryMovement::format($record->stock).' '.$record->unit->getLabel())
-                    ->color(fn (InventoryItem $record) => $record->isBelowMinimum() ? 'danger' : null)
-                    ->weight(fn (InventoryItem $record) => $record->isBelowMinimum() ? 'bold' : null)
-                    ->sortable(),
-                TextColumn::make('min_stock')->label(__('inventory.fields.min_stock'))
-                    ->formatStateUsing(fn (InventoryItem $record) => RecordInventoryMovement::format($record->min_stock)),
-                TextColumn::make('unit_cost_cents')->label(__('inventory.fields.unit_cost'))
-                    ->formatStateUsing(fn (int $state) => Money::format($state))->toggleable(),
+                CardList::card(
+                    TextColumn::make('name')->label(__('inventory.fields.name'))->searchable()->sortable(),
+                    TextColumn::make('stock_state')->label(__('inventory.fields.stock'))
+                        ->state(fn (InventoryItem $record) => $record->isBelowMinimum() ? __('inventory.cards.low') : __('inventory.cards.ok'))
+                        ->color(fn (InventoryItem $record) => $record->isBelowMinimum() ? 'danger' : 'success'),
+                    [
+                        TextColumn::make('stock')->label(__('inventory.fields.stock'))
+                            ->formatStateUsing(fn (InventoryItem $record) => __('inventory.cards.stock', ['stock' => RecordInventoryMovement::format($record->stock), 'unit' => $record->unit->getLabel()]))
+                            ->color(fn (InventoryItem $record) => $record->isBelowMinimum() ? 'danger' : null)
+                            ->weight(FontWeight::Bold)->sortable(),
+                        CardList::detail(TextColumn::make('min_stock')->label(__('inventory.fields.min_stock'))
+                            ->formatStateUsing(fn (InventoryItem $record) => __('inventory.cards.min', ['min' => RecordInventoryMovement::format($record->min_stock)])), 'heroicon-m-arrow-down-circle'),
+                        CardList::detail(TextColumn::make('unit_cost_cents')->label(__('inventory.fields.unit_cost'))
+                            ->formatStateUsing(fn (InventoryItem $record) => __('inventory.cards.cost', ['cost' => Money::format($record->unit_cost_cents), 'unit' => $record->unit->getLabel()])), 'heroicon-m-currency-dollar'),
+                    ],
+                ),
             ])
             ->filters([
                 Filter::make('low')->label(__('inventory.filters.low'))

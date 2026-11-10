@@ -6,6 +6,7 @@ use App\Domain\Auth\Permission;
 use App\Domain\Projects\Enums\ProjectStatus;
 use App\Domain\Reports\BusinessMetrics;
 use App\Domain\Settings\GeneralSettings;
+use App\Filament\Concerns\HasModuleIntro;
 use BackedEnum;
 use Carbon\CarbonImmutable;
 use Filament\Pages\Page;
@@ -19,9 +20,16 @@ use Livewire\Attributes\Url;
  */
 class Reports extends Page
 {
+    use HasModuleIntro;
+
+    protected static function moduleKey(): string
+    {
+        return 'reports';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
-    protected static ?int $navigationSort = 90;
+    protected static ?int $navigationSort = 1;
 
     protected string $view = 'filament.pages.reports';
 
@@ -38,11 +46,6 @@ class Reports extends Page
     public static function getNavigationLabel(): string
     {
         return __('reports.title');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('navigation.groups.sales');
     }
 
     public function getTitle(): string|Htmlable

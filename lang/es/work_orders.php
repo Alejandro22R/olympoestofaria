@@ -78,4 +78,9 @@ return [
         'progress_photos_max' => 'Fotos por avance',
         'unconfirmed_appointment_alert' => 'Avisar citas de mañana todavía sin confirmar',
     ],
+    'cards' => [
+        'due' => 'Entrega: :date',
+        'no_due' => 'Sin plazo definido',
+        'no_responsible' => 'Sin responsable',
+    ],
 ];

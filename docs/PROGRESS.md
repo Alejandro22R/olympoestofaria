@@ -192,3 +192,21 @@
 **Aceptación de la fase:** cubierta por pruebas (478 en verde), Pint y Larastan sin errores. El despliegue real queda pendiente: requiere el servidor, el dominio y las credenciales del taller. La guía y las plantillas están listas.
 
 **Pospuesto a pedido del taller:** WhatsApp Cloud API y correo SMTP se conectan al final (ver README). Mientras tanto, los avisos quedan en el registro de envíos y los fallos técnicos llegan a la campana del dueño.
+
+## Ajustes tras la primera prueba local
+
+- **Logo oficial** (emblema de Zeus con el rayo azul):
+  - Va en el portal, el panel (emblema + "OLYMPO / ESTOFARIA" en Sora, se adapta al tema claro u oscuro), la página de mantenimiento, el encabezado de los PDF (actas y cotización), el favicon, el ícono de iPhone/Android y la imagen al compartir en redes.
+  - Se recortó al círculo (esquinas transparentes) y se optimizó de 202 KB a 36 KB.
+  - Si el dueño sube un logo propio en Ajustes > Marca, se usa ese.
+- **Panel más simple**:
+  - **Menú por flujo de trabajo**: Inicio y Relatórios arriba; *Dia a dia* (agenda, quadro, vistorias, ordens); *Clientes e vendas*; *Oficina* y *Site* plegados. La lista de agendamentos se abre desde la agenda ("Ver em lista").
+  - **Inicio nuevo**: saludo, accesos rápidos según el rol (agendar, quadro, novo orçamento, novo cliente), recepciones de hoy con el botón "Receber veículo" y pendientes (prontos para entregar, atrasadas, solicitações novas, orçamentos aguardando). Las cifras del negocio siguen solo para el dueño.
+  - **Listas en tarjetas** en lugar de tablas: clientes, veículos, solicitações, orçamentos, pagamentos, ordens, agendamentos, vistorias y estoque. Cada tarjeta muestra el título, un estado y 2–3 datos con íconos. La búsqueda, los filtros y el orden siguen igual.
+  - Una frase bajo el título de cada módulo explica para qué sirve, y las listas vacías dicen qué hacer.
+- **Tutoriales guiados** (driver.js 1.4.0, autoalojado):
+  - Hay un tutorial para cada pantalla principal: inicio, agenda, check-in, quadro, ordens, orçamentos, pagamentos, clientes, veículos, estoque, catálogo, galeria, avaliações, relatórios y ajustes.
+  - Se abre solo la primera vez. Después se vuelve a ver con el botón "?" de la barra superior, o se reinician todos en Mi perfil > "Rever tutoriais".
+  - El progreso se guarda por usuario (`users.completed_tours`). Los textos están en pt-BR y es.
+  - Respeta "reducir movimiento" y usa los colores y fuentes de la marca.
+- Accesibilidad: sin violaciones WCAG 2.1 AA (axe-core, 20 páginas). Pruebas: 491 en verde.

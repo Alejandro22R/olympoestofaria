@@ -7,6 +7,7 @@ use App\Filament\Resources\Quotes\Pages\CreateQuote;
 use App\Filament\Resources\Quotes\Pages\EditQuote;
 use App\Filament\Resources\Quotes\Pages\ListQuotes;
 use App\Filament\Resources\Quotes\RelationManagers\PaymentsRelationManager;
+use App\Filament\Support\CardList;
 use App\Filament\Support\Money;
 use App\Filament\Support\MoneyInput;
 use App\Models\Customer;
@@ -26,6 +27,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -38,7 +40,7 @@ class QuoteResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCurrencyDollar;
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 11;
 
     public static function getModelLabel(): string
     {
@@ -97,17 +99,23 @@ class QuoteResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return CardList::grid($table, 'quotes')
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['customer', 'previousVersion']))
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('id')->label(__('quotes.fields.number'))->formatStateUsing(fn (Quote $record) => $record->number()),
-                TextColumn::make('customer.name')->label(__('quotes.fields.customer'))->searchable(),
-                TextColumn::make('vehicle_label')->label(__('quotes.fields.vehicle'))->placeholder('—'),
-                TextColumn::make('total_cents')->label(__('quotes.fields.total'))->formatStateUsing(fn (int $state) => Money::format($state))->sortable(),
-                TextColumn::make('status')->label(__('quotes.fields.status'))->badge(),
-                TextColumn::make('valid_until')->label(__('quotes.fields.valid_until'))->date('d/m/Y')->sortable(),
-                TextColumn::make('deposit_paid_at')->label(__('quotes.fields.deposit_paid'))->dateTime('d/m H:i')->placeholder('—'),
+                CardList::card(
+                    TextColumn::make('customer.name')->label(__('quotes.fields.customer'))->searchable(),
+                    TextColumn::make('status')->label(__('quotes.fields.status')),
+                    [
+                        TextColumn::make('total_cents')->label(__('quotes.fields.total'))->formatStateUsing(fn (int $state) => Money::format($state))->sortable()
+                            ->weight(FontWeight::Bold)->extraAttributes(['class' => 'font-display']),
+                        CardList::detail(TextColumn::make('vehicle_label')->label(__('quotes.fields.vehicle'))->placeholder('—'), 'heroicon-m-truck'),
+                        CardList::detail(TextColumn::make('id')->label(__('quotes.fields.number'))
+                            ->formatStateUsing(fn (Quote $record) => $record->number().' · '.__('quotes.cards.valid_until', ['date' => $record->valid_until?->format('d/m/Y') ?? '—'])), 'heroicon-m-document-text'),
+                        CardList::detail(TextColumn::make('deposit_paid_at')->label(__('quotes.fields.deposit_paid'))
+                            ->formatStateUsing(fn ($state) => __('quotes.cards.deposit_paid', ['date' => $state?->format('d/m')]))->placeholder(__('quotes.cards.deposit_pending')), 'heroicon-m-banknotes'),
+                    ],
+                ),
             ])
             ->filters([
                 SelectFilter::make('status')->label(__('quotes.fields.status'))->options(QuoteStatus::class)->multiple()

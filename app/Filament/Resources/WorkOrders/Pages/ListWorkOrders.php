@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WorkOrders\Pages;
 
+use App\Filament\Concerns\HasModuleIntro;
 use App\Filament\Pages\ProductionBoard;
 use App\Filament\Resources\WorkOrders\WorkOrderResource;
 use Filament\Actions\Action;
@@ -11,6 +12,13 @@ use Filament\Support\Icons\Heroicon;
 
 class ListWorkOrders extends ListRecords
 {
+    use HasModuleIntro;
+
+    protected static function moduleKey(): string
+    {
+        return 'work_orders';
+    }
+
     protected static string $resource = WorkOrderResource::class;
 
     protected function getHeaderActions(): array

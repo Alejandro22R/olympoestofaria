@@ -100,4 +100,8 @@ return [
         'amount_positive' => 'O valor deve ser maior que zero.',
         'above_outstanding' => 'O valor não pode passar do saldo em aberto (:outstanding).',
     ],
+    'cards' => [
+        'paid_at' => 'Pago em :date',
+        'created_at' => 'Criado em :date',
+    ],
 ];

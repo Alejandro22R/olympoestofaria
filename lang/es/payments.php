@@ -100,4 +100,8 @@ return [
         'amount_positive' => 'El monto debe ser mayor que cero.',
         'above_outstanding' => 'El monto no puede superar el saldo pendiente (:outstanding).',
     ],
+    'cards' => [
+        'paid_at' => 'Pagado el :date',
+        'created_at' => 'Creado el :date',
+    ],
 ];

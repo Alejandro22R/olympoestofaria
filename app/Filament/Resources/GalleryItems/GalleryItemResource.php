@@ -37,7 +37,7 @@ class GalleryItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?int $navigationSort = 60;
+    protected static ?int $navigationSort = 30;
 
     public static function getModelLabel(): string
     {
