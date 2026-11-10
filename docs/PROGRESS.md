@@ -210,7 +210,10 @@
   - El progreso se guarda por usuario (`users.completed_tours`). Los textos están en pt-BR y es.
   - Respeta "reducir movimiento" y usa los colores y fuentes de la marca.
 - Accesibilidad: sin violaciones WCAG 2.1 AA (axe-core, 20 páginas). Pruebas: 491 en verde.
-- **Modo claro del panel con más contraste**:
-  - Fondo gris azulado para que resalten las tarjetas blancas, con bordes y sombras visibles en tarjetas, secciones, listas, campos y estadísticas.
-  - Ítem activo del menú en azul de marca, franja de color en las estadísticas, y textos secundarios e íconos un tono más oscuros.
+- **Modo claro del panel con zonas y colores diferenciados**:
+  - Menú lateral azul marino (derivado del azul de marca) con el ítem activo en azul, separado del contenido.
+  - Barra superior blanca con línea azul. Fondo gris azulado y tarjetas blancas con borde, sombra y acento azul a la izquierda.
+  - Encabezados de sección con tinte azul. El submenú de Ajustes va en una tarjeta.
+  - Cada objeto del Inicio con su color (accesos rápidos y pendientes), estadísticas con franja de distinto color y columnas del tablero con el color de su etapa.
+  - Barra de desplazamiento del menú fina, visible solo al pasar el mouse.
   - El modo oscuro no cambia. Ambos modos sin violaciones WCAG 2.1 AA (`THEME=light npm run test:a11y`).

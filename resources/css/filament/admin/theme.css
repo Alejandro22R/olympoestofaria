@@ -113,110 +113,220 @@
 .dark .driver-popover.olympo-tour .driver-popover-arrow-side-left.driver-popover-arrow { border-left-color: var(--gray-900); }
 .dark .driver-popover.olympo-tour .driver-popover-arrow-side-right.driver-popover-arrow { border-right-color: var(--gray-900); }
 
+/* Barra de desplazamiento del menú: fina y solo visible al pasar el mouse (ambos temas). */
+.fi-sidebar-nav {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    scrollbar-gutter: stable;
+}
+
+.fi-sidebar-nav:hover,
+.fi-sidebar-nav:focus-within {
+    scrollbar-color: rgb(148 163 184 / 0.45) transparent;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background-color: transparent;
+}
+
+.fi-sidebar-nav:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(148 163 184 / 0.45);
+}
+
 /* ===========================================================================
-   Modo claro con más contraste y color (el oscuro no cambia).
-   - Fondo gris azulado suave para que las tarjetas blancas resalten.
-   - Bordes y sombras visibles en tarjetas, secciones y listas.
-   - Textos secundarios e íconos un tono más oscuros (AA cómodo).
-   - Menú con el ítem activo en azul de marca y barra superior definida.
-   Solo variables de Filament (paletas gray/primary generadas de los tokens de marca).
+   Modo claro con zonas y colores diferenciados (el oscuro no cambia).
+   - Menú lateral azul marino (derivado del azul de marca) separado del contenido.
+   - Barra superior blanca con línea de marca; fondo gris azulado; tarjetas blancas
+     con borde, sombra y acento de color.
+   - Cada objeto con su color: accesos rápidos, pendientes, estadísticas y etapas.
+   Solo variables de Filament (paletas primary/gray/success/warning/danger de la marca).
    =========================================================================== */
 html:not(.dark) {
-    /* Grises secundarios un paso más oscuros: subtítulos, íconos y textos de ayuda. */
     --gray-400: oklch(0.62 0 0);
     --gray-500: oklch(0.48 0 0);
-    --olympo-surface: color-mix(in oklab, var(--gray-100) 82%, var(--primary-100));
-    --olympo-border: color-mix(in oklab, var(--gray-300) 80%, var(--primary-200));
-    --olympo-card-shadow: 0 0 0 1px var(--olympo-border), 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px -4px rgb(15 23 42 / 0.08);
+    --olympo-surface: color-mix(in oklab, var(--gray-100) 78%, var(--primary-200));
+    --olympo-border: color-mix(in oklab, var(--gray-300) 75%, var(--primary-300));
+    --olympo-navy: color-mix(in oklab, var(--primary-950) 70%, var(--gray-950));
+    --olympo-card-shadow: 0 0 0 1px var(--olympo-border), 0 1px 2px rgb(15 23 42 / 0.06), 0 6px 14px -6px rgb(15 23 42 / 0.12);
 }
 
 html:not(.dark) .fi-body {
     background-color: var(--olympo-surface);
 }
 
-/* Barra superior blanca con borde marcado. */
+/* Barra superior: blanca con una línea azul de marca. */
 html:not(.dark) .fi-topbar {
     background-color: var(--color-white);
-    box-shadow: 0 1px 0 var(--olympo-border), 0 2px 8px -4px rgb(15 23 42 / 0.1);
+    box-shadow: inset 0 -3px 0 var(--primary-600), 0 2px 10px -4px rgb(15 23 42 / 0.15);
 }
 
-/* Menú lateral: grupos legibles y el ítem activo en azul de marca. */
-html:not(.dark) .fi-sidebar-group-label {
-    color: var(--gray-600);
+/* Menú lateral azul marino. */
+html:not(.dark) .fi-sidebar {
+    background-color: var(--olympo-navy);
+}
+
+html:not(.dark) .fi-sidebar .fi-sidebar-group-label,
+html:not(.dark) .fi-sidebar .fi-sidebar-group-btn .fi-icon,
+html:not(.dark) .fi-sidebar .fi-sidebar-group-collapse-btn {
+    color: color-mix(in oklab, var(--primary-200) 70%, var(--color-white));
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
 }
 
-html:not(.dark) .fi-sidebar-item-label {
-    color: var(--gray-800);
+html:not(.dark) .fi-sidebar .fi-sidebar-item-label {
+    color: var(--gray-100);
 }
 
-html:not(.dark) .fi-sidebar-item-btn:hover,
-html:not(.dark) .fi-sidebar-item-btn:focus-visible {
-    background-color: color-mix(in oklab, var(--primary-100) 70%, var(--color-white));
+html:not(.dark) .fi-sidebar .fi-sidebar-item-btn > .fi-icon,
+html:not(.dark) .fi-sidebar .fi-sidebar-item-icon {
+    color: color-mix(in oklab, var(--primary-300) 60%, var(--color-white));
 }
 
-html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+html:not(.dark) .fi-sidebar .fi-sidebar-item-btn:hover,
+html:not(.dark) .fi-sidebar .fi-sidebar-item-btn:focus-visible {
+    background-color: rgb(255 255 255 / 0.1);
+}
+
+html:not(.dark) .fi-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
     background-color: var(--primary-600);
-    box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--primary-600) 60%, transparent);
+    box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.5);
 }
 
-html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label,
-html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
-html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-icon,
-html:not(.dark) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-grouped-border-part {
+html:not(.dark) .fi-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label,
+html:not(.dark) .fi-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
+html:not(.dark) .fi-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-icon {
     color: var(--color-white);
 }
 
-/* Tarjetas, secciones, listas y estadísticas: borde y sombra visibles. */
+html:not(.dark) .fi-sidebar-nav:hover {
+    scrollbar-color: rgb(255 255 255 / 0.3) transparent;
+}
+
+html:not(.dark) .fi-sidebar-nav:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 0.3);
+}
+
+/* Submenú de Ajustes (dentro del contenido): tarjeta blanca con el activo en azul. */
+html:not(.dark) .fi-page-sub-navigation-sidebar {
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--color-white);
+    box-shadow: var(--olympo-card-shadow);
+}
+
+html:not(.dark) .fi-page-sub-navigation-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: var(--primary-600);
+}
+
+html:not(.dark) .fi-page-sub-navigation-sidebar .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > * {
+    color: var(--color-white);
+}
+
+/* Tarjetas, secciones, listas y estadísticas: blancas, con borde y sombra. */
 html:not(.dark) .fi-section:not(.fi-section-not-contained),
 html:not(.dark) .fi-ta-ctn,
 html:not(.dark) .fi-wi-stats-overview-stat,
-html:not(.dark) .fi-wi-chart .fi-section,
 html:not(.dark) .fi-fo-repeater-item,
 html:not(.dark) .olympo-card {
     background-color: var(--color-white);
     box-shadow: var(--olympo-card-shadow);
 }
 
-html:not(.dark) .fi-section-header,
-html:not(.dark) .fi-ta-header-toolbar {
-    background-color: color-mix(in oklab, var(--gray-50) 60%, var(--primary-50));
+/* Encabezados de sección y barra de búsqueda de las listas con tinte azul y acento. */
+html:not(.dark) .fi-section-header {
+    background-color: color-mix(in oklab, var(--primary-50) 80%, var(--color-white));
+    box-shadow: inset 4px 0 0 var(--primary-600);
 }
 
 html:not(.dark) .fi-section-header-heading {
-    color: var(--gray-950);
+    color: var(--primary-900);
 }
 
-/* Tarjetas de las listas: borde, sombra y realce en azul al pasar el mouse. */
-html:not(.dark) .fi-ta-content-grid .fi-ta-record {
-    background-color: var(--color-white);
-    box-shadow: var(--olympo-card-shadow);
+html:not(.dark) .fi-ta-header-toolbar {
+    background-color: color-mix(in oklab, var(--primary-50) 80%, var(--color-white));
 }
 
-html:not(.dark) .fi-ta-content-grid .fi-ta-record:hover {
-    box-shadow: 0 0 0 2px var(--primary-500), 0 6px 16px -6px rgb(15 23 42 / 0.18);
-}
-
+/* Tarjetas de las listas: acento azul a la izquierda y realce al pasar el mouse. */
 html:not(.dark) .fi-ta-content-grid {
     background-color: var(--olympo-surface);
 }
 
-/* Estadísticas del dueño: franja de color arriba. */
-html:not(.dark) .fi-wi-stats-overview-stat {
-    border-top: 3px solid var(--primary-600);
+html:not(.dark) .fi-ta-content-grid .fi-ta-record {
+    background-color: var(--color-white);
+    box-shadow: inset 4px 0 0 var(--primary-500), var(--olympo-card-shadow);
 }
 
-/* Subtítulo de cada módulo y migas de pan con más contraste. */
+html:not(.dark) .fi-ta-content-grid .fi-ta-record:hover {
+    box-shadow: inset 4px 0 0 var(--primary-600), 0 0 0 2px var(--primary-500), 0 8px 18px -8px rgb(15 23 42 / 0.25);
+}
+
+/* Títulos y subtítulos de página. */
+html:not(.dark) .fi-header-heading {
+    color: var(--gray-950);
+}
+
 html:not(.dark) .fi-header-subheading {
     color: var(--gray-700);
 }
 
-/* Campos de formulario con borde visible. */
+/* Campos de formulario con borde visible y foco azul. */
 html:not(.dark) .fi-input-wrp {
     box-shadow: 0 0 0 1px var(--olympo-border);
 }
 
 html:not(.dark) .fi-input-wrp:focus-within {
     box-shadow: 0 0 0 2px var(--primary-600);
+}
+
+/* Estadísticas del dueño: cada una con su color. */
+html:not(.dark) .fi-wi-stats-overview-stat {
+    border-top: 4px solid var(--primary-600);
+}
+
+html:not(.dark) .fi-wi-stats-overview-stat:nth-child(5n + 2) { border-top-color: var(--success-600); }
+html:not(.dark) .fi-wi-stats-overview-stat:nth-child(5n + 3) { border-top-color: var(--warning-500); }
+html:not(.dark) .fi-wi-stats-overview-stat:nth-child(5n + 4) { border-top-color: var(--primary-800); }
+html:not(.dark) .fi-wi-stats-overview-stat:nth-child(5n + 5) { border-top-color: var(--danger-600); }
+
+/* Accesos rápidos y pendientes del Inicio: fondo e ícono del color de cada uno. */
+html:not(.dark) .olympo-tone {
+    background-color: color-mix(in oklab, var(--tone-50) 70%, var(--color-white));
+    box-shadow: inset 4px 0 0 var(--tone-600), 0 0 0 1px color-mix(in oklab, var(--tone-200) 80%, var(--color-white)), 0 6px 14px -8px rgb(15 23 42 / 0.2);
+}
+
+html:not(.dark) .olympo-tone .olympo-tone-icon {
+    background-color: var(--tone-600);
+    color: var(--color-white);
+}
+
+html:not(.dark) .olympo-tone .olympo-tone-text {
+    color: var(--tone-700);
+}
+
+.olympo-tone-primary { --tone-50: var(--primary-50); --tone-200: var(--primary-200); --tone-600: var(--primary-600); --tone-700: var(--primary-700); }
+.olympo-tone-success { --tone-50: var(--success-50); --tone-200: var(--success-200); --tone-600: var(--success-600); --tone-700: var(--success-700); }
+.olympo-tone-warning { --tone-50: var(--warning-50); --tone-200: var(--warning-200); --tone-600: var(--warning-600); --tone-700: var(--warning-800); }
+.olympo-tone-danger { --tone-50: var(--danger-50); --tone-200: var(--danger-200); --tone-600: var(--danger-600); --tone-700: var(--danger-700); }
+.olympo-tone-navy { --tone-50: var(--primary-100); --tone-200: var(--primary-300); --tone-600: var(--primary-800); --tone-700: var(--primary-900); }
+
+/* Tablero: cada columna con el color de su etapa. */
+html:not(.dark) [data-stage] {
+    background-color: color-mix(in oklab, var(--stage-color, var(--primary-500)) 7%, var(--color-white));
+    border-color: color-mix(in oklab, var(--stage-color, var(--primary-500)) 30%, var(--color-white));
+    box-shadow: inset 0 4px 0 var(--stage-color, var(--primary-500)), var(--olympo-card-shadow);
+}
+
+html:not(.dark) [data-stage] [data-card] {
+    box-shadow: inset 3px 0 0 var(--stage-color, var(--primary-500)), var(--olympo-card-shadow);
 }

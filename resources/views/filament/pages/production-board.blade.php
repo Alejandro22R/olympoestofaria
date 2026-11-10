@@ -11,6 +11,7 @@
                 x-on:dragleave="over = null"
                 x-on:drop.prevent="over = null; if (dragging) { $wire.moveCard(dragging, {{ $column['id'] }}); dragging = null }"
                 data-stage="{{ $column['id'] }}"
+                style="--stage-color: {{ $column['color'] }}"
                 @if ($loop->first) data-tour="board-column" @endif
             >
                 <header class="flex items-center justify-between gap-2 border-b border-gray-200 px-3 py-2 dark:border-white/10">

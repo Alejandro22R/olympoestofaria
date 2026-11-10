@@ -48,10 +48,10 @@ class QuickStart extends Widget
         $can = fn (string $ability, string $model) => (bool) $user?->can($ability, $model);
 
         $actions = array_values(array_filter([
-            $can('create', Appointment::class) ? ['label' => __('dashboard.actions.appointment'), 'hint' => __('dashboard.actions.appointment_hint'), 'icon' => 'heroicon-o-calendar-days', 'url' => AppointmentResource::getUrl('create'), 'tour' => 'qa-appointment'] : null,
-            $can('viewAny', WorkOrder::class) ? ['label' => __('dashboard.actions.board'), 'hint' => __('dashboard.actions.board_hint'), 'icon' => 'heroicon-o-view-columns', 'url' => ProductionBoard::getUrl(), 'tour' => 'qa-board'] : null,
-            $can('create', Quote::class) ? ['label' => __('dashboard.actions.quote'), 'hint' => __('dashboard.actions.quote_hint'), 'icon' => 'heroicon-o-document-currency-dollar', 'url' => QuoteResource::getUrl('create'), 'tour' => 'qa-quote'] : null,
-            $can('create', Customer::class) ? ['label' => __('dashboard.actions.customer'), 'hint' => __('dashboard.actions.customer_hint'), 'icon' => 'heroicon-o-user-plus', 'url' => CustomerResource::getUrl('create'), 'tour' => 'qa-customer'] : null,
+            $can('create', Appointment::class) ? ['label' => __('dashboard.actions.appointment'), 'hint' => __('dashboard.actions.appointment_hint'), 'icon' => 'heroicon-o-calendar-days', 'url' => AppointmentResource::getUrl('create'), 'tour' => 'qa-appointment', 'tone' => 'primary'] : null,
+            $can('viewAny', WorkOrder::class) ? ['label' => __('dashboard.actions.board'), 'hint' => __('dashboard.actions.board_hint'), 'icon' => 'heroicon-o-view-columns', 'url' => ProductionBoard::getUrl(), 'tour' => 'qa-board', 'tone' => 'navy'] : null,
+            $can('create', Quote::class) ? ['label' => __('dashboard.actions.quote'), 'hint' => __('dashboard.actions.quote_hint'), 'icon' => 'heroicon-o-document-currency-dollar', 'url' => QuoteResource::getUrl('create'), 'tour' => 'qa-quote', 'tone' => 'success'] : null,
+            $can('create', Customer::class) ? ['label' => __('dashboard.actions.customer'), 'hint' => __('dashboard.actions.customer_hint'), 'icon' => 'heroicon-o-user-plus', 'url' => CustomerResource::getUrl('create'), 'tour' => 'qa-customer', 'tone' => 'warning'] : null,
         ]));
 
         $start = $now->startOfDay()->utc();
